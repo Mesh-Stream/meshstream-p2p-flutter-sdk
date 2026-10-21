@@ -18,17 +18,27 @@ final class MeshStreamPlaybackSession {
   final MeshStreamPlaybackMode playbackMode;
   final MeshStreamUnavailableReason? fallbackReason;
   final MeshStreamPlatform _platform;
+  final _activeOperations = <Future<void>>{};
   bool _closed = false;
   Future<void>? _closing;
 
-  Future<T> _withOpen<T>(Future<T> Function() operation) async {
+  Future<T> _withOpen<T>(Future<T> Function() operation) {
     if (_closed || _closing != null) {
-      throw const MeshStreamException(
-        'SESSION_CLOSED',
-        'MeshStream playback session is closed.',
+      return Future.error(
+        const MeshStreamException(
+          'SESSION_CLOSED',
+          'MeshStream playback session is closed.',
+        ),
       );
     }
-    return operation();
+    final result = Future.sync(operation);
+    final settled = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    _activeOperations.add(settled);
+    settled.then((_) => _activeOperations.remove(settled));
+    return result;
   }
 
   Future<bool> preload() =>
@@ -65,6 +75,7 @@ final class MeshStreamPlaybackSession {
 
   Future<void> _close() async {
     try {
+      await Future.wait(_activeOperations.toList());
       await _platform.closeSession(clientId, sessionId);
     } finally {
       _closed = true;

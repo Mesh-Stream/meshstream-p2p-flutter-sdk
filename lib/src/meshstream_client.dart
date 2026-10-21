@@ -9,43 +9,43 @@ final class MeshStreamClient {
   final String clientId;
   final MeshStreamPlatform _platform;
   final _sessions = <MeshStreamPlaybackSession>{};
-  final _pendingCreations = <Future<MeshStreamPlaybackSession>>{};
+  final _activeOperations = <Future<void>>{};
   bool _closed = false;
   Future<void>? _closing;
 
-  Future<T> _withOpen<T>(Future<T> Function() operation) async {
+  Future<T> _withOpen<T>(Future<T> Function() operation) {
     if (_closed || _closing != null) {
-      throw const MeshStreamException(
-        'CLIENT_CLOSED',
-        'MeshStream client is closed.',
+      return Future.error(
+        const MeshStreamException(
+            'CLIENT_CLOSED', 'MeshStream client is closed.'),
       );
     }
-    return operation();
+    final result = Future.sync(operation);
+    final settled = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    _activeOperations.add(settled);
+    settled.then((_) => _activeOperations.remove(settled));
+    return result;
   }
 
   Future<MeshStreamPlaybackSession> createPlaybackSession(
     PlaybackSessionOptions options,
-  ) {
-    final creation = _withOpen(() async {
-      final reply = await _platform.createPlaybackSession(clientId, options);
-      final session = MeshStreamPlaybackSession(
-        clientId: clientId,
-        sessionId: reply.sessionId,
-        playbackUrl: reply.playbackUrl,
-        playbackMode: reply.playbackMode,
-        fallbackReason: reply.fallbackReason,
-        platform: _platform,
-      );
-      _sessions.add(session);
-      return session;
-    });
-    _pendingCreations.add(creation);
-    creation.then<void>(
-      (_) => _pendingCreations.remove(creation),
-      onError: (Object _, StackTrace __) => _pendingCreations.remove(creation),
-    );
-    return creation;
-  }
+  ) =>
+      _withOpen(() async {
+        final reply = await _platform.createPlaybackSession(clientId, options);
+        final session = MeshStreamPlaybackSession(
+          clientId: clientId,
+          sessionId: reply.sessionId,
+          playbackUrl: reply.playbackUrl,
+          playbackMode: reply.playbackMode,
+          fallbackReason: reply.fallbackReason,
+          platform: _platform,
+        );
+        _sessions.add(session);
+        return session;
+      });
 
   Future<MeshStreamStatus> getStatus() =>
       _withOpen(() => _platform.getStatus(clientId));
@@ -54,10 +54,7 @@ final class MeshStreamClient {
 
   Future<void> _close() async {
     try {
-      await Future.wait(_pendingCreations.map((creation) => creation.then<void>(
-            (_) {},
-            onError: (Object _, StackTrace __) {},
-          )));
+      await Future.wait(_activeOperations.toList());
       Object? sessionCloseError;
       StackTrace? sessionCloseStack;
       try {

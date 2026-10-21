@@ -129,6 +129,124 @@ void main() {
     expect(failing.calls, contains('closeClient:c1'));
     await failing.dispose();
   });
+
+  test('create retains the platform that created the native client', () async {
+    final creatingPlatform = _DelayedClientPlatform();
+    MeshStreamPlatform.instance = creatingPlatform;
+    final creating = MeshStream.create(MeshStreamConfig(key: 'key'));
+    MeshStreamPlatform.instance = fake;
+    creatingPlatform.completeCreation();
+
+    final client = await creating;
+    await client.createPlaybackSession(
+      PlaybackSessionOptions(url: 'https://cdn.example/a.m3u8'),
+    );
+    expect(creatingPlatform.calls,
+        contains('createPlaybackSession:c1:https://cdn.example/a.m3u8'));
+    expect(fake.calls, isEmpty);
+    await creatingPlatform.dispose();
+  });
+
+  test('public facade delegates player controls and telemetry', () async {
+    const status = MeshStreamStatus(
+      accountEnabled: true,
+      applicationEnabled: true,
+      keyEnabled: true,
+      platformEnabled: true,
+      effectiveP2pEnabled: true,
+      reason: MeshStreamUnavailableReason.ok,
+    );
+    const stats = MeshStreamStats(
+      httpDownloaded: 0,
+      p2pDownloaded: 0,
+      p2pUploaded: 0,
+      httpSegmentDownloadSuccesses: 0,
+      httpSegmentDownloadFailures: 0,
+      p2pSegmentDownloadSuccesses: 0,
+      p2pSegmentDownloadFailures: 0,
+      p2pSegmentUploadSuccesses: 0,
+      p2pSegmentUploadFailures: 0,
+      connectedPeers: 0,
+      peerConnectErrors: 0,
+      trackerErrors: 0,
+      downloadOffloadRatio: 0,
+      p2pSegmentDownloadSuccessRatio: 0,
+      p2pSegmentUploadSuccessRatio: 0,
+    );
+    const diagnostics = MeshStreamDiagnostics(
+      fallbackCount: 0,
+      iceAttempts: 0,
+      iceSuccesses: 0,
+      iceFailures: 0,
+      iceDurationMs: 0,
+    );
+    fake.statusReply = status;
+    fake.statsReply = stats;
+    fake.diagnosticsReply = diagnostics;
+    final client = await MeshStream.create(MeshStreamConfig(key: 'key'));
+    final session = await client.createPlaybackSession(
+      PlaybackSessionOptions(url: 'https://cdn.example/a.m3u8'),
+    );
+
+    await session.setP2pEnabled(false);
+    await session.updateBufferedDurationMs(0);
+    await session.updateCurrentPositionMs(1200);
+    expect(await client.getStatus(), same(status));
+    expect(await session.getStats(), same(stats));
+    expect(await session.getDiagnostics(), same(diagnostics));
+    expect(
+        fake.calls,
+        containsAllInOrder([
+          'setP2pEnabled:c1:s1:false',
+          'updateBufferedDurationMs:c1:s1:0',
+          'updateCurrentPositionMs:c1:s1:1200',
+          'getStatus:c1',
+          'getStats:c1:s1',
+          'getDiagnostics:c1:s1',
+        ]));
+  });
+
+  test('client close drains an admitted status operation', () async {
+    final delayed = _DelayedOperationsPlatform();
+    MeshStreamPlatform.instance = delayed;
+    final client = await MeshStream.create(MeshStreamConfig(key: 'key'));
+    final status = client.getStatus();
+    final closing = client.close();
+
+    await Future<void>.delayed(Duration.zero);
+    expect(delayed.calls, isNot(contains('closeClient:c1')));
+    await expectLater(client.getStatus(), throwsA(isA<MeshStreamException>()));
+    delayed.completeStatus();
+    await status;
+    await closing;
+    expect(delayed.calls.last, 'closeClient:c1');
+    await delayed.dispose();
+  });
+
+  test('simultaneous client and session close drains an admitted preload',
+      () async {
+    final delayed = _DelayedOperationsPlatform();
+    MeshStreamPlatform.instance = delayed;
+    final client = await MeshStream.create(MeshStreamConfig(key: 'key'));
+    final session = await client.createPlaybackSession(
+      PlaybackSessionOptions(url: 'https://cdn.example/a.m3u8'),
+    );
+    final preload = session.preload();
+    final sessionClosing = session.close();
+    final clientClosing = client.close();
+
+    expect(delayed.calls, isNot(contains('closeSession:c1:s1')));
+    expect(delayed.calls, isNot(contains('closeClient:c1')));
+    await expectLater(session.preload(), throwsA(isA<MeshStreamException>()));
+    delayed.completePreload();
+    expect(await preload, true);
+    await Future.wait([sessionClosing, clientClosing]);
+    expect(
+        delayed.calls.where((call) => call == 'closeSession:c1:s1').length, 1);
+    expect(delayed.calls.where((call) => call == 'closeClient:c1').length, 1);
+    expect(delayed.calls.last, 'closeClient:c1');
+    await delayed.dispose();
+  });
 }
 
 class _DelayedSessionPlatform extends FakeMeshStreamPlatform {
@@ -150,4 +268,43 @@ class _FailingSessionClosePlatform extends FakeMeshStreamPlatform {
     calls.add('closeSession:$clientId:$sessionId');
     throw StateError('Session close failed.');
   }
+}
+
+class _DelayedClientPlatform extends FakeMeshStreamPlatform {
+  final _created = Completer<NativeClientReply>();
+
+  @override
+  Future<NativeClientReply> createClient(MeshStreamConfig config) {
+    calls.add('createClient:${config.key}');
+    return _created.future;
+  }
+
+  void completeCreation() => _created.complete(clientReply);
+}
+
+class _DelayedOperationsPlatform extends FakeMeshStreamPlatform {
+  final _status = Completer<MeshStreamStatus>();
+  final _preload = Completer<bool>();
+
+  @override
+  Future<MeshStreamStatus> getStatus(String clientId) {
+    calls.add('getStatus:$clientId');
+    return _status.future;
+  }
+
+  @override
+  Future<bool> preload(String clientId, String sessionId) {
+    calls.add('preload:$clientId:$sessionId');
+    return _preload.future;
+  }
+
+  void completeStatus() => _status.complete(const MeshStreamStatus(
+        accountEnabled: true,
+        applicationEnabled: true,
+        keyEnabled: true,
+        platformEnabled: true,
+        effectiveP2pEnabled: true,
+        reason: MeshStreamUnavailableReason.ok,
+      ));
+  void completePreload() => _preload.complete(true);
 }

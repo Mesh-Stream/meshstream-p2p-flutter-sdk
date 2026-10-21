@@ -6,8 +6,9 @@ abstract final class MeshStream {
   const MeshStream._();
 
   static Future<MeshStreamClient> create(MeshStreamConfig config) async {
-    final reply = await MeshStreamPlatform.instance.createClient(config);
-    return MeshStreamClient(reply.clientId, MeshStreamPlatform.instance);
+    final platform = MeshStreamPlatform.instance;
+    final reply = await platform.createClient(config);
+    return MeshStreamClient(reply.clientId, platform);
   }
 
   static Stream<MeshStreamEvent> get events =>
