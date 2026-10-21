@@ -44,6 +44,18 @@ typedef ExamplePlayerFactory = ExamplePlayer Function(Uri url);
 typedef ExampleCleanupErrorReporter = void Function(
     Object error, StackTrace stack);
 
+String formatTrafficBytes(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+  return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+}
+
+String formatOffloadPercent(int p2pDownloaded, int httpDownloaded) {
+  final totalDownloaded = p2pDownloaded + httpDownloaded;
+  if (totalDownloaded == 0) return '0%';
+  return '${(p2pDownloaded * 100 / totalDownloaded).round()}%';
+}
+
 final class MeshStreamExampleBackend implements ExampleBackend {
   const MeshStreamExampleBackend();
 
@@ -180,7 +192,6 @@ class _MyAppState extends State<MyApp> {
   MeshStreamDiagnostics? _diagnostics;
   MeshStreamPlaybackMode? _mode;
   MeshStreamUnavailableReason? _fallbackReason;
-  int _cdnFallbackBytes = 0;
   String? _error;
   Future<void>? _closingCurrent;
 
@@ -242,8 +253,6 @@ class _MyAppState extends State<MyApp> {
         case MeshStreamEventName.p2pUnavailable:
           _mode = MeshStreamPlaybackMode.nativeCdn;
           _fallbackReason = event.reason;
-        case MeshStreamEventName.cdnFallback:
-          _cdnFallbackBytes += event.bytes ?? 0;
         case MeshStreamEventName.statistics:
           _stats = event.statistics;
         default:
@@ -314,7 +323,6 @@ class _MyAppState extends State<MyApp> {
     _peerCount = 0;
     _mode = null;
     _fallbackReason = null;
-    _cdnFallbackBytes = 0;
     _lastTelemetry = null;
 
     Object? firstError;
@@ -390,10 +398,16 @@ class _MyAppState extends State<MyApp> {
             ],
             if (_session != null) ...[
               Text('Playback mode: ${_mode?.name ?? 'unknown'}'),
+              const SizedBox(height: 8),
               Text('Peers: $_peerCount'),
-              Text('P2P downloaded: ${_stats?.p2pDownloaded ?? 0} bytes'),
-              Text('CDN downloaded: ${_stats?.httpDownloaded ?? 0} bytes'),
-              Text('CDN fallback: $_cdnFallbackBytes bytes'),
+              Text(
+                  'P2P down: ${formatTrafficBytes(_stats?.p2pDownloaded ?? 0)}'),
+              Text(
+                  'HTTP down: ${formatTrafficBytes(_stats?.httpDownloaded ?? 0)}'),
+              Text('P2P up: ${formatTrafficBytes(_stats?.p2pUploaded ?? 0)}'),
+              Text(
+                  'Offload: ${formatOffloadPercent(_stats?.p2pDownloaded ?? 0, _stats?.httpDownloaded ?? 0)}'),
+              const SizedBox(height: 8),
               Text('Fallback reason: ${_fallbackReason?.wireName ?? 'none'}'),
               Text(
                   'Diagnostics: ${_diagnostics == null ? 'loading' : 'fallbacks ${_diagnostics!.fallbackCount}, tracker ${_diagnostics!.lastTrackerError ?? 'none'}, peer ${_diagnostics!.lastPeerError ?? 'none'}'}'),

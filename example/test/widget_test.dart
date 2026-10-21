@@ -6,6 +6,17 @@ import 'package:meshstream_p2p/meshstream_p2p.dart';
 import 'package:meshstream_p2p_example/example_app.dart';
 
 void main() {
+  test('formats traffic metrics like the web demo', () {
+    expect(formatTrafficBytes(0), '0 B');
+    expect(formatTrafficBytes(1023), '1023 B');
+    expect(formatTrafficBytes(1024), '1.0 KB');
+    expect(formatTrafficBytes(2338324), '2.23 MB');
+    expect(formatTrafficBytes(20080230), '19.15 MB');
+    expect(formatTrafficBytes(3565158), '3.40 MB');
+    expect(formatOffloadPercent(2338324, 20080230), '10%');
+    expect(formatOffloadPercent(0, 0), '0%');
+  });
+
   testWidgets('shows session inputs before creating a player', (tester) async {
     final backend = _FakeBackend();
     await tester.pumpWidget(MyApp(
@@ -46,8 +57,11 @@ void main() {
     expect(playerUrl.toString(), 'https://cdn.example.com/meshstream.m3u8');
     expect(find.byKey(const Key('playback-player')), findsOneWidget);
     expect(find.text('Playback mode: nativeP2p'), findsOneWidget);
-    expect(find.text('P2P downloaded: 120 bytes'), findsOneWidget);
-    expect(find.text('CDN downloaded: 30 bytes'), findsOneWidget);
+    expect(find.text('Peers: 2'), findsOneWidget);
+    expect(find.text('P2P down: 120 B'), findsOneWidget);
+    expect(find.text('HTTP down: 30 B'), findsOneWidget);
+    expect(find.text('P2P up: 0 B'), findsOneWidget);
+    expect(find.text('Offload: 80%'), findsOneWidget);
     expect(backend.actions, contains('position:2500'));
     expect(backend.actions, contains('buffer:4000'));
 
@@ -63,7 +77,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
     expect(find.text('Playback mode: nativeP2p'), findsOneWidget);
-    expect(find.text('CDN fallback: 19 bytes'), findsOneWidget);
+    expect(find.textContaining('CDN fallback:'), findsNothing);
 
     backend.emit(const MeshStreamEvent.p2pUnavailable(
       clientId: 'client-1',
