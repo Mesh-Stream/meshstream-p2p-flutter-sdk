@@ -309,7 +309,7 @@ enum MeshStreamWire {
   static func diagnostics(_ value: MeshStreamDiagnosticsSnapshot) -> ApiDiagnostics {
     ApiDiagnostics(fallbackCount: value.fallbackCount,
       firstPeerConnectMs: value.firstPeerConnectMs > 0 ? value.firstPeerConnectMs : nil,
-      coldStart: value.coldStartP2PDownloaded > 0 || value.coldStartHTTPDownloaded > 0
+      coldStart: value.firstPeerConnectMs > 0
         ? ApiColdStartSnapshot(p2pDownloaded: value.coldStartP2PDownloaded, httpDownloaded: value.coldStartHTTPDownloaded) : nil,
       lastTrackerError: value.lastTrackerError, lastPeerError: value.lastPeerError,
       lastErrorAtMs: value.lastErrorAtMs > 0 ? value.lastErrorAtMs : nil,

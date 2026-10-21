@@ -144,6 +144,26 @@ final class MeshStreamHostApiTests: XCTestCase {
     api.close()
   }
 
+  func testColdStartSnapshotPreservesZeroTrafficAfterFirstPeerConnection() throws {
+    let native = FakeClient()
+    native.nextSession.diagnosticsSnapshot = MeshStreamDiagnosticsSnapshot(firstPeerConnectMs: 31)
+    let api = MeshStreamHostApiImpl(createNativeClient: { _ in native }, emitEvent: { _ in })
+    defer { api.close() }
+    let id = try client(api), reply = try session(api, id)
+    let value = try result { api.getDiagnostics(clientId: id, sessionId: reply.sessionId, completion: $0) }
+    XCTAssertEqual(value.firstPeerConnectMs, 31)
+    let coldStart = try XCTUnwrap(value.coldStart)
+    XCTAssertEqual(coldStart.p2pDownloaded, 0)
+    XCTAssertEqual(coldStart.httpDownloaded, 0)
+  }
+
+  func testColdStartSnapshotIsAbsentWithoutFirstPeerConnection() {
+    let value = MeshStreamWire.diagnostics(MeshStreamDiagnosticsSnapshot(
+      coldStartP2PDownloaded: 42, coldStartHTTPDownloaded: 43))
+    XCTAssertNil(value.firstPeerConnectMs)
+    XCTAssertNil(value.coldStart)
+  }
+
   func testClosingOneClientPreservesOtherClientAndClosesOwnedSessionsFirst() throws {
     var order: [String] = []
     let first = FakeClient(), second = FakeClient()
