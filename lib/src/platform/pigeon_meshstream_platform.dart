@@ -18,9 +18,12 @@ class PigeonMeshStreamPlatform extends MeshStreamPlatform {
 
   @override
   Stream<MeshStreamEvent> get events => _events ??= _eventChannel
-      .receiveBroadcastStream()
-      .map(_decodeEvent)
-      .handleError((Object error) => throw _translate(error));
+          .receiveBroadcastStream()
+          .map(_decodeEvent)
+          .handleError((Object error) {
+        if (error is PlatformException) throw _translate(error);
+        throw error;
+      });
 
   Future<T> _invoke<T>(Future<T> Function() operation) async {
     try {

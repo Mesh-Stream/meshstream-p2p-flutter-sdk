@@ -5,6 +5,9 @@ import 'package:meshstream_p2p/src/platform/meshstream_platform.dart';
 
 class FakeMeshStreamPlatform extends MeshStreamPlatform {
   final calls = <String>[];
+  final clientConfigs = <MeshStreamConfig>[];
+  final sessionRequests =
+      <({String clientId, PlaybackSessionOptions options})>[];
   final _events = StreamController<MeshStreamEvent>.broadcast();
   NativeClientReply clientReply = const NativeClientReply('c1');
   NativeSessionReply sessionReply = const NativeSessionReply(
@@ -25,6 +28,7 @@ class FakeMeshStreamPlatform extends MeshStreamPlatform {
   @override
   Future<NativeClientReply> createClient(MeshStreamConfig config) async {
     calls.add('createClient:${config.key}');
+    clientConfigs.add(config);
     return clientReply;
   }
 
@@ -32,6 +36,7 @@ class FakeMeshStreamPlatform extends MeshStreamPlatform {
   Future<NativeSessionReply> createPlaybackSession(
       String clientId, PlaybackSessionOptions options) async {
     calls.add('createPlaybackSession:$clientId:${options.url}');
+    sessionRequests.add((clientId: clientId, options: options));
     return sessionReply;
   }
 
@@ -62,20 +67,23 @@ class FakeMeshStreamPlatform extends MeshStreamPlatform {
   @override
   Future<MeshStreamStatus> getStatus(String clientId) async {
     calls.add('getStatus:$clientId');
-    return statusReply!;
+    return statusReply ??
+        (throw StateError('Configure statusReply before getStatus.'));
   }
 
   @override
   Future<MeshStreamStats> getStats(String clientId, String sessionId) async {
     calls.add('getStats:$clientId:$sessionId');
-    return statsReply!;
+    return statsReply ??
+        (throw StateError('Configure statsReply before getStats.'));
   }
 
   @override
   Future<MeshStreamDiagnostics> getDiagnostics(
       String clientId, String sessionId) async {
     calls.add('getDiagnostics:$clientId:$sessionId');
-    return diagnosticsReply!;
+    return diagnosticsReply ??
+        (throw StateError('Configure diagnosticsReply before getDiagnostics.'));
   }
 
   @override
