@@ -1,0 +1,35 @@
+PODS:
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - meshstream_p2p (1.0.0):
+    - Flutter
+    - MeshStreamKit (= 1.0.2)
+  - MeshStreamKit (1.0.2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - meshstream_p2p (from `.symlinks/plugins/meshstream_p2p/ios`)
+
+SPEC REPOS:
+  trunk:
+    - MeshStreamKit
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  meshstream_p2p:
+    :path: ".symlinks/plugins/meshstream_p2p/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  meshstream_p2p: 22a33de899a1b2fe427e7f5bb6b213182858b403
+  MeshStreamKit: a90c840b997dbb078ec100becc6a3ca05c33b86a
+
+PODFILE CHECKSUM: f8c2dcdfb50bb67645580d28a6bf814fca30bdec
+
+COCOAPODS: 1.16.2
