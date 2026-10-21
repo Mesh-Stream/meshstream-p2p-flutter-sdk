@@ -29,6 +29,7 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
 
+  # Flutter's pod helper resolves the plugin and its public MeshStreamKit pod.
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
     inherit! :search_paths

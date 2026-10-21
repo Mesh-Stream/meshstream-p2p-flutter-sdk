@@ -17,6 +17,24 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            val flutterStorageBaseUrl =
+                System.getenv("FLUTTER_STORAGE_BASE_URL") ?: "https://storage.googleapis.com"
+            url = uri("$flutterStorageBaseUrl/download.flutter.io")
+            content { includeGroup("io.flutter") }
+        }
+        maven {
+            url = uri("https://pub-61830e1369904d19af505ff74fd55ba4.r2.dev/maven")
+            content { includeGroup("io.meshstream") }
+        }
+    }
+}
+
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "8.11.1" apply false

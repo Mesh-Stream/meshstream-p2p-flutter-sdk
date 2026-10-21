@@ -1,17 +1,3 @@
-# meshstream_p2p_example
+# MeshStream Flutter example
 
-Demonstrates how to use the meshstream_p2p plugin.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Run `flutter pub get` and `flutter run` from this directory, then enter your own authorized Key and source URL. The fields contain non-working hints only. The app creates a MeshStream session, passes its playback URL to `video_player`, displays P2P/CDN telemetry, and closes the event subscription, player, session, and client when the screen is disposed. See the [integration guide](../README.md) for host setup and supported media types.
