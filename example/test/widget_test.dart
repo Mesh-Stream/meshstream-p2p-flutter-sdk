@@ -15,9 +15,9 @@ void main() {
 
     expect(find.widgetWithText(TextField, 'Key'), findsOneWidget);
     expect(find.widgetWithText(TextField, 'Source URL'), findsOneWidget);
-    expect(find.widgetWithText(TextField, 'Content ID (optional)'),
-        findsOneWidget);
-    expect(find.text('Mime type'), findsOneWidget);
+    expect(
+        find.widgetWithText(TextField, 'Content ID (optional)'), findsNothing);
+    expect(find.text('Mime type'), findsNothing);
     expect(find.widgetWithText(FilledButton, 'Create session'), findsOneWidget);
     expect(find.byKey(const Key('playback-player')), findsNothing);
     expect(backend.actions, isEmpty);
@@ -41,6 +41,8 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create session'));
     await tester.pumpAndSettle();
 
+    expect(backend.lastSessionOptions!.contentId, isNull);
+    expect(backend.lastSessionOptions!.mimeType, isNull);
     expect(playerUrl.toString(), 'https://cdn.example.com/meshstream.m3u8');
     expect(find.byKey(const Key('playback-player')), findsOneWidget);
     expect(find.text('Playback mode: nativeP2p'), findsOneWidget);
@@ -125,6 +127,7 @@ class _FakeBackend implements ExampleBackend {
   final bool failSessionClose;
   final actions = <String>[];
   final closed = Completer<void>();
+  PlaybackSessionOptions? lastSessionOptions;
   late final _events = StreamController<MeshStreamEvent>.broadcast(
     onCancel: () {
       if (!failEventCancel) actions.add('events:cancel');
@@ -134,7 +137,9 @@ class _FakeBackend implements ExampleBackend {
   @override
   Future<ExampleClient> createClient(MeshStreamConfig config) async {
     actions.add('client:create:${config.key}');
-    return _FakeClient(actions, closed, failSessionClose);
+    return _FakeClient(actions, closed, failSessionClose, (options) {
+      lastSessionOptions = options;
+    });
   }
 
   @override
@@ -199,14 +204,16 @@ class _FailingCancelSubscription
 }
 
 class _FakeClient implements ExampleClient {
-  _FakeClient(this.actions, this.closed, this.failSessionClose);
+  _FakeClient(this.actions, this.closed, this.failSessionClose, this.onCreate);
   final List<String> actions;
   final Completer<void> closed;
   final bool failSessionClose;
+  final void Function(PlaybackSessionOptions options) onCreate;
 
   @override
   Future<ExampleSession> createSession(PlaybackSessionOptions options) async {
     actions.add('session:create:${options.url}');
+    onCreate(options);
     return _FakeSession(actions, failSessionClose);
   }
 

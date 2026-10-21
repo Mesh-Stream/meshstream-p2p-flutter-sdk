@@ -167,8 +167,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _key = TextEditingController();
   final _url = TextEditingController();
-  final _contentId = TextEditingController();
-  MeshStreamMimeType _mimeType = MeshStreamMimeType.m3u8;
   ExampleClient? _client;
   ExampleSession? _session;
   ExamplePlayer? _player;
@@ -207,12 +205,7 @@ class _MyAppState extends State<MyApp> {
       if (_disposed) return;
       _client = await widget.backend.createClient(MeshStreamConfig(key: key));
       if (_disposed) return;
-      _session = await _client!.createSession(PlaybackSessionOptions(
-        url: url,
-        contentId:
-            _contentId.text.trim().isEmpty ? null : _contentId.text.trim(),
-        mimeType: _mimeType,
-      ));
+      _session = await _client!.createSession(PlaybackSessionOptions(url: url));
       if (_disposed) return;
       final session = _session!;
       _mode = session.playbackMode;
@@ -362,7 +355,6 @@ class _MyAppState extends State<MyApp> {
     unawaited(_closeCurrent());
     _key.dispose();
     _url.dispose();
-    _contentId.dispose();
     super.dispose();
   }
 
@@ -380,23 +372,6 @@ class _MyAppState extends State<MyApp> {
                 decoration: const InputDecoration(
                     labelText: 'Source URL',
                     hintText: 'https://cdn.example.com/live/playlist.m3u8')),
-            TextField(
-                controller: _contentId,
-                decoration:
-                    const InputDecoration(labelText: 'Content ID (optional)')),
-            DropdownButtonFormField<MeshStreamMimeType>(
-              // `value` is supported by the package's Flutter 3.22 floor.
-              // ignore: deprecated_member_use
-              value: _mimeType,
-              decoration: const InputDecoration(labelText: 'Mime type'),
-              items: MeshStreamMimeType.values
-                  .map((type) =>
-                      DropdownMenuItem(value: type, child: Text(type.name)))
-                  .toList(),
-              onChanged: _busy
-                  ? null
-                  : (value) => setState(() => _mimeType = value ?? _mimeType),
-            ),
             const SizedBox(height: 16),
             FilledButton(
                 onPressed: _busy ? null : _createSession,
