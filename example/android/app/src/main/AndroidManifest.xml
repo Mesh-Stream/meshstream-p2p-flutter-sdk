@@ -2,6 +2,7 @@
     <application
         android:label="meshstream_p2p_example"
         android:name="${applicationName}"
+        android:networkSecurityConfig="@xml/meshstream_network_security_config"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

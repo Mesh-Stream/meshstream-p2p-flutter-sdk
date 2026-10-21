@@ -27,6 +27,20 @@ dependencyResolutionManagement {
 }
 ```
 
+MeshStream playback URLs use a local HTTP proxy. In an Android host app, allow cleartext traffic for loopback hosts only. Add `android:networkSecurityConfig="@xml/meshstream_network_security_config"` to `<application>` and create `res/xml/meshstream_network_security_config.xml`:
+
+```xml
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>127.0.0.1</domain>
+        <domain>localhost</domain>
+    </domain-config>
+</network-security-config>
+```
+
+The [example manifest](example/android/app/src/main/AndroidManifest.xml) uses this configuration. If your app already has a network security config, merge these two loopback domains into it. An HTTP media origin needs its own explicit domain rule; prefer HTTPS. Do not enable app-wide cleartext traffic.
+
 On iOS, use the normal Flutter CocoaPods flow after `flutter pub get`:
 
 ```sh
@@ -63,7 +77,7 @@ Supported source types are HLS (`m3u8`), MPEG-DASH (`mpd`), MP4 (`mp4`), and MP3
 
 ## Events and diagnostics
 
-Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every five seconds and displays the latest fallback reason.
+Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. `cdnFallback` reports a CDN byte delta, not a playback mode transition: a native P2P session can still fetch some bytes from CDN. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every five seconds and displays the latest fallback reason.
 
 ## Run the example
 

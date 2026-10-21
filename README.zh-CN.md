@@ -27,6 +27,20 @@ dependencyResolutionManagement {
 }
 ```
 
+MeshStream 播放 URL 会使用本机 HTTP 代理。Android 宿主应用只需允许回环主机的明文流量：在 `<application>` 中设置 `android:networkSecurityConfig="@xml/meshstream_network_security_config"`，并创建 `res/xml/meshstream_network_security_config.xml`：
+
+```xml
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>127.0.0.1</domain>
+        <domain>localhost</domain>
+    </domain-config>
+</network-security-config>
+```
+
+[示例 manifest](example/android/app/src/main/AndroidManifest.xml) 已引用该配置。如果应用已有网络安全配置，应将这两个回环域名合并进去。HTTP 媒体源需要单独添加明确的域名规则；优先使用 HTTPS。不要为整个应用开启明文流量。
+
 iOS 在 `flutter pub get` 后按 Flutter 常规 CocoaPods 流程安装：
 
 ```sh
@@ -63,7 +77,7 @@ await controller.play();
 
 ## 事件与诊断
 
-订阅 `MeshStream.eventsFor(sessionId: session.sessionId)`，并在关闭会话前取消订阅。事件名称为 `peerCountChanged`、`playbackPrepared`、`p2pReady`、`p2pUnavailable`、`statistics`、`cdnFallback`、`trackerError` 和 `peerConnectError`。`p2pUnavailable` 携带原因，`statistics` 携带字节计数及连接节点数。会话提供 `getStats()` 和 `getDiagnostics()` 获取快照；客户端的 `getStatus()` 返回账户、应用、Key 和平台的可用状态。示例每五秒刷新统计和诊断，并显示最近的回退原因。
+订阅 `MeshStream.eventsFor(sessionId: session.sessionId)`，并在关闭会话前取消订阅。事件名称为 `peerCountChanged`、`playbackPrepared`、`p2pReady`、`p2pUnavailable`、`statistics`、`cdnFallback`、`trackerError` 和 `peerConnectError`。`p2pUnavailable` 携带原因，`statistics` 携带字节计数及连接节点数。`cdnFallback` 表示 CDN 字节增量，不表示播放模式切换：原生 P2P 会话仍可能从 CDN 获取部分数据。会话提供 `getStats()` 和 `getDiagnostics()` 获取快照；客户端的 `getStatus()` 返回账户、应用、Key 和平台的可用状态。示例每五秒刷新统计和诊断，并显示最近的回退原因。
 
 ## 运行示例
 

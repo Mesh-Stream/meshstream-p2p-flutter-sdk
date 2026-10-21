@@ -49,6 +49,20 @@ void main() {
     expect(backend.actions, contains('position:2500'));
     expect(backend.actions, contains('buffer:4000'));
 
+    backend.emit(const MeshStreamEvent.cdnFallback(
+      clientId: 'client-1',
+      sessionId: 'session-1',
+      bytes: 12,
+    ));
+    backend.emit(const MeshStreamEvent.cdnFallback(
+      clientId: 'client-1',
+      sessionId: 'session-1',
+      bytes: 7,
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Playback mode: nativeP2p'), findsOneWidget);
+    expect(find.text('CDN fallback: 19 bytes'), findsOneWidget);
+
     backend.emit(const MeshStreamEvent.p2pUnavailable(
       clientId: 'client-1',
       sessionId: 'session-1',
@@ -68,39 +82,132 @@ void main() {
     expect(backend.actions.sublist(backend.actions.indexOf('events:cancel')),
         ['events:cancel', 'player:dispose', 'session:close', 'client:close']);
   });
+
+  testWidgets('cleanup reports first failure and still releases every owner',
+      (tester) async {
+    final backend = _FakeBackend(
+      failEventCancel: true,
+      failSessionClose: true,
+    );
+    final reported = <Object>[];
+
+    await tester.pumpWidget(MyApp(
+      backend: backend,
+      playerFactory: (_) => _FakePlayer(backend.actions, failDispose: true),
+      cleanupErrorReporter: (error, _) => reported.add(error),
+    ));
+    await tester.enterText(find.widgetWithText(TextField, 'Key'), 'test-key');
+    await tester.enterText(find.widgetWithText(TextField, 'Source URL'),
+        'https://cdn.example.com/demo.m3u8');
+    await tester.tap(find.widgetWithText(FilledButton, 'Create session'));
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    for (var i = 0; i < 10 && !backend.closed.isCompleted; i++) {
+      await tester.pump(const Duration(milliseconds: 1));
+    }
+    expect(backend.actions.sublist(backend.actions.indexOf('events:cancel')),
+        ['events:cancel', 'player:dispose', 'session:close', 'client:close']);
+    expect(reported, hasLength(1));
+    expect(reported.single.toString(), contains('cancel failed'));
+  });
 }
 
 class _FakeBackend implements ExampleBackend {
+  _FakeBackend({
+    this.failEventCancel = false,
+    this.failSessionClose = false,
+  });
+  final bool failEventCancel;
+  final bool failSessionClose;
   final actions = <String>[];
   final closed = Completer<void>();
   late final _events = StreamController<MeshStreamEvent>.broadcast(
-    onCancel: () => actions.add('events:cancel'),
+    onCancel: () {
+      if (!failEventCancel) actions.add('events:cancel');
+    },
   );
 
   @override
   Future<ExampleClient> createClient(MeshStreamConfig config) async {
     actions.add('client:create:${config.key}');
-    return _FakeClient(actions, closed);
+    return _FakeClient(actions, closed, failSessionClose);
   }
 
   @override
   Stream<MeshStreamEvent> eventsFor(String sessionId) {
     assert(sessionId == 'session-1');
+    if (failEventCancel) {
+      return _FailingCancelStream(_events.stream, actions);
+    }
     return _events.stream;
   }
 
   void emit(MeshStreamEvent event) => _events.add(event);
 }
 
+class _FailingCancelStream extends Stream<MeshStreamEvent> {
+  _FailingCancelStream(this.source, this.actions);
+  final Stream<MeshStreamEvent> source;
+  final List<String> actions;
+
+  @override
+  StreamSubscription<MeshStreamEvent> listen(
+    void Function(MeshStreamEvent)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) =>
+      _FailingCancelSubscription(
+        source.listen(onData,
+            onError: onError, onDone: onDone, cancelOnError: cancelOnError),
+        actions,
+      );
+}
+
+class _FailingCancelSubscription
+    implements StreamSubscription<MeshStreamEvent> {
+  _FailingCancelSubscription(this.inner, this.actions);
+  final StreamSubscription<MeshStreamEvent> inner;
+  final List<String> actions;
+
+  @override
+  Future<void> cancel() async {
+    actions.add('events:cancel');
+    await inner.cancel();
+    throw StateError('cancel failed');
+  }
+
+  @override
+  Future<E> asFuture<E>([E? futureValue]) => inner.asFuture(futureValue);
+  @override
+  bool get isPaused => inner.isPaused;
+  @override
+  void onData(void Function(MeshStreamEvent)? handleData) =>
+      inner.onData(handleData);
+  @override
+  void onDone(void Function()? handleDone) => inner.onDone(handleDone);
+  @override
+  void onError(Function? handleError) => inner.onError(handleError);
+  @override
+  void pause([Future<void>? resumeSignal]) => inner.pause(resumeSignal);
+  @override
+  void resume() => inner.resume();
+}
+
 class _FakeClient implements ExampleClient {
-  _FakeClient(this.actions, this.closed);
+  _FakeClient(this.actions, this.closed, this.failSessionClose);
   final List<String> actions;
   final Completer<void> closed;
+  final bool failSessionClose;
 
   @override
   Future<ExampleSession> createSession(PlaybackSessionOptions options) async {
     actions.add('session:create:${options.url}');
-    return _FakeSession(actions);
+    return _FakeSession(actions, failSessionClose);
   }
 
   @override
@@ -111,8 +218,9 @@ class _FakeClient implements ExampleClient {
 }
 
 class _FakeSession implements ExampleSession {
-  _FakeSession(this.actions);
+  _FakeSession(this.actions, this.failClose);
   final List<String> actions;
+  final bool failClose;
 
   @override
   String get sessionId => 'session-1';
@@ -156,12 +264,16 @@ class _FakeSession implements ExampleSession {
         iceDurationMs: 0,
       );
   @override
-  Future<void> close() async => actions.add('session:close');
+  Future<void> close() async {
+    actions.add('session:close');
+    if (failClose) throw StateError('session close failed');
+  }
 }
 
 class _FakePlayer implements ExamplePlayer {
-  _FakePlayer(this.actions);
+  _FakePlayer(this.actions, {this.failDispose = false});
   final List<String> actions;
+  final bool failDispose;
   VoidCallback? listener;
   bool _initialized = false;
   bool _playing = false;
@@ -199,5 +311,8 @@ class _FakePlayer implements ExamplePlayer {
   }
 
   @override
-  Future<void> dispose() async => actions.add('player:dispose');
+  Future<void> dispose() async {
+    actions.add('player:dispose');
+    if (failDispose) throw StateError('player dispose failed');
+  }
 }

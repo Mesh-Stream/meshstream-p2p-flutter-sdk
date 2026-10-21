@@ -41,6 +41,8 @@ abstract interface class ExamplePlayer {
 }
 
 typedef ExamplePlayerFactory = ExamplePlayer Function(Uri url);
+typedef ExampleCleanupErrorReporter = void Function(
+    Object error, StackTrace stack);
 
 final class MeshStreamExampleBackend implements ExampleBackend {
   const MeshStreamExampleBackend();
@@ -140,12 +142,23 @@ class MyApp extends StatefulWidget {
     super.key,
     this.backend = const MeshStreamExampleBackend(),
     this.playerFactory = defaultPlayerFactory,
+    this.cleanupErrorReporter = defaultCleanupErrorReporter,
   });
 
   final ExampleBackend backend;
   final ExamplePlayerFactory playerFactory;
+  final ExampleCleanupErrorReporter cleanupErrorReporter;
 
   static ExamplePlayer defaultPlayerFactory(Uri url) => VideoPlayerAdapter(url);
+
+  static void defaultCleanupErrorReporter(Object error, StackTrace stack) {
+    FlutterError.reportError(FlutterErrorDetails(
+      exception: error,
+      stack: stack,
+      library: 'meshstream_p2p_example',
+      context: ErrorDescription('while releasing playback resources'),
+    ));
+  }
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -169,7 +182,9 @@ class _MyAppState extends State<MyApp> {
   MeshStreamDiagnostics? _diagnostics;
   MeshStreamPlaybackMode? _mode;
   MeshStreamUnavailableReason? _fallbackReason;
+  int _cdnFallbackBytes = 0;
   String? _error;
+  Future<void>? _closingCurrent;
 
   Future<void> _createSession() async {
     if (_busy) return;
@@ -235,7 +250,7 @@ class _MyAppState extends State<MyApp> {
           _mode = MeshStreamPlaybackMode.nativeCdn;
           _fallbackReason = event.reason;
         case MeshStreamEventName.cdnFallback:
-          _mode = MeshStreamPlaybackMode.nativeCdn;
+          _cdnFallbackBytes += event.bytes ?? 0;
         case MeshStreamEventName.statistics:
           _stats = event.statistics;
         default:
@@ -287,30 +302,58 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> _closeCurrent() async {
+  Future<void> _closeCurrent() => _closingCurrent ??=
+      _closeCurrentResources().whenComplete(() => _closingCurrent = null);
+
+  Future<void> _closeCurrentResources() async {
     _statsTimer?.cancel();
     _statsTimer = null;
     final events = _events;
     _events = null;
-    if (events != null) await events.cancel();
     final player = _player;
     _player = null;
-    if (player != null) {
-      player.removeListener(_onPlayerChanged);
-      await player.dispose();
-    }
     final session = _session;
     _session = null;
-    if (session != null) await session.close();
     final client = _client;
     _client = null;
-    if (client != null) await client.close();
     _stats = null;
     _diagnostics = null;
     _peerCount = 0;
     _mode = null;
     _fallbackReason = null;
+    _cdnFallbackBytes = 0;
     _lastTelemetry = null;
+
+    Object? firstError;
+    StackTrace? firstStack;
+    Future<void> attempt(FutureOr<void> Function() release) async {
+      try {
+        await release();
+      } catch (error, stack) {
+        firstError ??= error;
+        firstStack ??= stack;
+      }
+    }
+
+    if (events != null) await attempt(events.cancel);
+    if (player != null) {
+      await attempt(() => player.removeListener(_onPlayerChanged));
+      await attempt(player.dispose);
+    }
+    if (session != null) await attempt(session.close);
+    if (client != null) await attempt(client.close);
+
+    if (firstError != null) {
+      if (!_disposed && mounted) {
+        setState(() => _error = firstError.toString());
+      }
+      try {
+        widget.cleanupErrorReporter(firstError!, firstStack!);
+      } catch (reportError) {
+        debugPrint(
+            'Playback cleanup failed: $firstError; error reporting failed: $reportError');
+      }
+    }
   }
 
   @override
@@ -375,6 +418,7 @@ class _MyAppState extends State<MyApp> {
               Text('Peers: $_peerCount'),
               Text('P2P downloaded: ${_stats?.p2pDownloaded ?? 0} bytes'),
               Text('CDN downloaded: ${_stats?.httpDownloaded ?? 0} bytes'),
+              Text('CDN fallback: $_cdnFallbackBytes bytes'),
               Text('Fallback reason: ${_fallbackReason?.wireName ?? 'none'}'),
               Text(
                   'Diagnostics: ${_diagnostics == null ? 'loading' : 'fallbacks ${_diagnostics!.fallbackCount}, tracker ${_diagnostics!.lastTrackerError ?? 'none'}, peer ${_diagnostics!.lastPeerError ?? 'none'}'}'),
