@@ -18,6 +18,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://pub-61830e1369904d19af505ff74fd55ba4.r2.dev/maven")
+            content { includeGroup("io.meshstream") }
+        }
     }
 }
 
@@ -57,8 +61,6 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all {
-                it.useJUnitPlatform()
-
                 it.outputs.upToDateWhen { false }
 
                 it.testLogging {
@@ -72,6 +74,5 @@ android {
 
 dependencies {
     implementation("io.meshstream:meshstream-android-sdk:1.0.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.mockito:mockito-core:5.0.0")
+    testImplementation("junit:junit:4.13.2")
 }
