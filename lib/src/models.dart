@@ -29,6 +29,34 @@ enum MeshStreamUnavailableReason {
   quotaDisabled,
 }
 
+extension MeshStreamUnavailableReasonWire on MeshStreamUnavailableReason {
+  /// The exact reason value used by the native SDKs and RN 1.0 contract.
+  String get wireName => switch (this) {
+        MeshStreamUnavailableReason.ok => 'OK',
+        MeshStreamUnavailableReason.accountDisabled => 'ACCOUNT_DISABLED',
+        MeshStreamUnavailableReason.appDisabled => 'APP_DISABLED',
+        MeshStreamUnavailableReason.appNotFound => 'APP_NOT_FOUND',
+        MeshStreamUnavailableReason.keyDisabled => 'KEY_DISABLED',
+        MeshStreamUnavailableReason.platformDisabled => 'PLATFORM_DISABLED',
+        MeshStreamUnavailableReason.originDenied => 'ORIGIN_DENIED',
+        MeshStreamUnavailableReason.packageDenied => 'PACKAGE_DENIED',
+        MeshStreamUnavailableReason.bundleDenied => 'BUNDLE_DENIED',
+        MeshStreamUnavailableReason.signingCertDenied => 'SIGNING_CERT_DENIED',
+        MeshStreamUnavailableReason.teamDenied => 'TEAM_DENIED',
+        MeshStreamUnavailableReason.authFailed => 'AUTH_FAILED',
+        MeshStreamUnavailableReason.configUnavailable => 'CONFIG_UNAVAILABLE',
+        MeshStreamUnavailableReason.trackerError => 'TRACKER_ERROR',
+        MeshStreamUnavailableReason.noPeers => 'NO_PEERS',
+        MeshStreamUnavailableReason.unsupported => 'UNSUPPORTED',
+        MeshStreamUnavailableReason.initializationFailed =>
+          'INITIALIZATION_FAILED',
+        MeshStreamUnavailableReason.disabled => 'DISABLED',
+        MeshStreamUnavailableReason.keyP2pDisabled => 'KEY_P2P_DISABLED',
+        MeshStreamUnavailableReason.quotaExhausted => 'QUOTA_EXHAUSTED',
+        MeshStreamUnavailableReason.quotaDisabled => 'QUOTA_DISABLED',
+      };
+}
+
 enum MeshStreamEventName {
   peerCountChanged,
   playbackPrepared,

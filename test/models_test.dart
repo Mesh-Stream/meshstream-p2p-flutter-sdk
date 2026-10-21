@@ -74,4 +74,114 @@ void main() {
     expect(stats.connectedPeers, 0);
     expect(stats.downloadOffloadRatio, 0);
   });
+
+  test('unavailable reasons retain every RN native wire value', () {
+    expect(
+      MeshStreamUnavailableReason.values
+          .map((reason) => reason.wireName)
+          .toList(),
+      [
+        'OK',
+        'ACCOUNT_DISABLED',
+        'APP_DISABLED',
+        'APP_NOT_FOUND',
+        'KEY_DISABLED',
+        'PLATFORM_DISABLED',
+        'ORIGIN_DENIED',
+        'PACKAGE_DENIED',
+        'BUNDLE_DENIED',
+        'SIGNING_CERT_DENIED',
+        'TEAM_DENIED',
+        'AUTH_FAILED',
+        'CONFIG_UNAVAILABLE',
+        'TRACKER_ERROR',
+        'NO_PEERS',
+        'UNSUPPORTED',
+        'INITIALIZATION_FAILED',
+        'DISABLED',
+        'KEY_P2P_DISABLED',
+        'QUOTA_EXHAUSTED',
+        'QUOTA_DISABLED',
+      ],
+    );
+  });
+
+  test('all event constructors expose exactly their legal payload', () {
+    const stats = MeshStreamStats(
+      httpDownloaded: 0,
+      p2pDownloaded: 0,
+      p2pUploaded: 0,
+      httpSegmentDownloadSuccesses: 0,
+      httpSegmentDownloadFailures: 0,
+      p2pSegmentDownloadSuccesses: 0,
+      p2pSegmentDownloadFailures: 0,
+      p2pSegmentUploadSuccesses: 0,
+      p2pSegmentUploadFailures: 0,
+      connectedPeers: 0,
+      peerConnectErrors: 0,
+      trackerErrors: 0,
+      downloadOffloadRatio: 0,
+      p2pSegmentDownloadSuccessRatio: 0,
+      p2pSegmentUploadSuccessRatio: 0,
+    );
+    const events = <MeshStreamEvent>[
+      MeshStreamEvent.peerCountChanged(
+          clientId: 'c', sessionId: 's', peerCount: 2),
+      MeshStreamEvent.playbackPrepared(
+        clientId: 'c',
+        sessionId: 's',
+        playbackUrl: 'https://cdn.example/play',
+      ),
+      MeshStreamEvent.p2pReady(clientId: 'c', sessionId: 's'),
+      MeshStreamEvent.p2pUnavailable(
+        clientId: 'c',
+        sessionId: 's',
+        reason: MeshStreamUnavailableReason.noPeers,
+      ),
+      MeshStreamEvent.statistics(
+          clientId: 'c', sessionId: 's', statistics: stats),
+      MeshStreamEvent.cdnFallback(clientId: 'c', sessionId: 's', bytes: 32),
+      MeshStreamEvent.trackerError(
+          clientId: 'c', sessionId: 's', totalErrors: 3),
+      MeshStreamEvent.peerConnectError(
+          clientId: 'c', sessionId: 's', totalErrors: 4),
+    ];
+    const expectedNames = <MeshStreamEventName>[
+      MeshStreamEventName.peerCountChanged,
+      MeshStreamEventName.playbackPrepared,
+      MeshStreamEventName.p2pReady,
+      MeshStreamEventName.p2pUnavailable,
+      MeshStreamEventName.statistics,
+      MeshStreamEventName.cdnFallback,
+      MeshStreamEventName.trackerError,
+      MeshStreamEventName.peerConnectError,
+    ];
+    final expectedPayloads = <Map<String, Object?>>[
+      {'peerCount': 2},
+      {'playbackUrl': 'https://cdn.example/play'},
+      {},
+      {'reason': MeshStreamUnavailableReason.noPeers},
+      {'statistics': stats},
+      {'bytes': 32},
+      {'totalErrors': 3},
+      {'totalErrors': 4},
+    ];
+
+    for (var i = 0; i < events.length; i++) {
+      final event = events[i];
+      expect((event.type, event.clientId, event.sessionId),
+          (expectedNames[i], 'c', 's'));
+      expect(
+        <String, Object?>{
+          if (event.peerCount != null) 'peerCount': event.peerCount,
+          if (event.playbackUrl != null) 'playbackUrl': event.playbackUrl,
+          if (event.reason != null) 'reason': event.reason,
+          if (event.statistics != null) 'statistics': event.statistics,
+          if (event.bytes != null) 'bytes': event.bytes,
+          if (event.totalErrors != null) 'totalErrors': event.totalErrors,
+        },
+        expectedPayloads[i],
+      );
+    }
+  });
 }
