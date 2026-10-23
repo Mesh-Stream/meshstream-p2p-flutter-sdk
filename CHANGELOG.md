@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Upgrade the Android and iOS MeshStream native SDK dependencies to 1.0.4.
+
 ## 1.0.0
 
 - Android and iOS native SDK integration.

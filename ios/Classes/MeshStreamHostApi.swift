@@ -25,7 +25,7 @@ protocol MeshStreamNativeSession: AnyObject {
 }
 
 // These two SDK classes are returned by getters but their class symbols are
-// hidden in the 1.0.2 binary. Copy their immutable fields instead of constructing
+// hidden in the native binary. Copy their immutable fields instead of constructing
 // or subclassing them; this also keeps protocol-backed tests independent of ABI.
 struct MeshStreamStatusSnapshot {
   var accountEnabled = false

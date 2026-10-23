@@ -227,7 +227,7 @@ class _MyAppState extends State<MyApp> {
       await _player!.initialize();
       if (_disposed) return;
       _statsTimer =
-          Timer.periodic(const Duration(seconds: 5), (_) => _refreshStats());
+          Timer.periodic(const Duration(seconds: 2), (_) => _refreshStats());
       await _refreshStats();
       if (_disposed) return;
       await _player!.play();

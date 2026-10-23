@@ -47,7 +47,7 @@ iOS 在 `flutter pub get` 后按 Flutter 常规 CocoaPods 流程安装：
 cd ios && pod install
 ```
 
-插件 podspec 使用公开的 `MeshStreamKit` 1.0.2 pod，无需私有 spec 仓库或本地 XCFramework 路径。
+插件 podspec 使用公开的 `MeshStreamKit` 1.0.4 pod，无需私有 spec 仓库或本地 XCFramework 路径。
 
 ## 开始播放
 

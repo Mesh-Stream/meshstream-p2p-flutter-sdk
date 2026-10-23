@@ -99,6 +99,25 @@ void main() {
         ['events:cancel', 'player:dispose', 'session:close', 'client:close']);
   });
 
+  testWidgets('refreshes session statistics every two seconds', (tester) async {
+    final backend = _FakeBackend();
+    await tester.pumpWidget(MyApp(
+      backend: backend,
+      playerFactory: (_) => _FakePlayer(backend.actions),
+    ));
+    await tester.enterText(find.widgetWithText(TextField, 'Key'), 'test-key');
+    await tester.enterText(find.widgetWithText(TextField, 'Source URL'),
+        'https://cdn.example.com/demo.m3u8');
+    await tester.tap(find.widgetWithText(FilledButton, 'Create session'));
+    await tester.pumpAndSettle();
+
+    backend.actions.clear();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pump();
+
+    expect(backend.actions, ['stats:get', 'diagnostics:get']);
+  });
+
   testWidgets('cleanup reports first failure and still releases every owner',
       (tester) async {
     final backend = _FakeBackend(
@@ -258,32 +277,39 @@ class _FakeSession implements ExampleSession {
   Future<void> updateBufferedDurationMs(int durationMs) async =>
       actions.add('buffer:$durationMs');
   @override
-  Future<MeshStreamStats> getStats() async => const MeshStreamStats(
-        httpDownloaded: 30,
-        p2pDownloaded: 120,
-        p2pUploaded: 0,
-        httpSegmentDownloadSuccesses: 1,
-        httpSegmentDownloadFailures: 0,
-        p2pSegmentDownloadSuccesses: 2,
-        p2pSegmentDownloadFailures: 0,
-        p2pSegmentUploadSuccesses: 0,
-        p2pSegmentUploadFailures: 0,
-        connectedPeers: 2,
-        peerConnectErrors: 0,
-        trackerErrors: 0,
-        downloadOffloadRatio: 0.8,
-        p2pSegmentDownloadSuccessRatio: 1,
-        p2pSegmentUploadSuccessRatio: 0,
-      );
+  Future<MeshStreamStats> getStats() async {
+    actions.add('stats:get');
+    return const MeshStreamStats(
+      httpDownloaded: 30,
+      p2pDownloaded: 120,
+      p2pUploaded: 0,
+      httpSegmentDownloadSuccesses: 1,
+      httpSegmentDownloadFailures: 0,
+      p2pSegmentDownloadSuccesses: 2,
+      p2pSegmentDownloadFailures: 0,
+      p2pSegmentUploadSuccesses: 0,
+      p2pSegmentUploadFailures: 0,
+      connectedPeers: 2,
+      peerConnectErrors: 0,
+      trackerErrors: 0,
+      downloadOffloadRatio: 0.8,
+      p2pSegmentDownloadSuccessRatio: 1,
+      p2pSegmentUploadSuccessRatio: 0,
+    );
+  }
+
   @override
-  Future<MeshStreamDiagnostics> getDiagnostics() async =>
-      const MeshStreamDiagnostics(
-        fallbackCount: 0,
-        iceAttempts: 0,
-        iceSuccesses: 0,
-        iceFailures: 0,
-        iceDurationMs: 0,
-      );
+  Future<MeshStreamDiagnostics> getDiagnostics() async {
+    actions.add('diagnostics:get');
+    return const MeshStreamDiagnostics(
+      fallbackCount: 0,
+      iceAttempts: 0,
+      iceSuccesses: 0,
+      iceFailures: 0,
+      iceDurationMs: 0,
+    );
+  }
+
   @override
   Future<void> close() async {
     actions.add('session:close');
