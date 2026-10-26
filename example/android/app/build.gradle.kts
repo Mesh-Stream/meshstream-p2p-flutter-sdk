@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "net.meshstream.meshstream_p2p_example"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // Match the native SDK's verified toolchain on the shared build Mac.
+    ndkVersion = "27.2.12479018"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

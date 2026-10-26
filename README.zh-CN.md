@@ -4,9 +4,9 @@ MeshStream 为 Android 和 iOS 上的 Flutter 播放增加 P2P 辅助分发。�
 
 ## 环境与安装
 
-需要 Flutter 3.22、Dart 3.4 或更新版本。Android 最低 API 24，iOS 最低 13.0。在应用中加入 `meshstream_p2p` 和播放器依赖，例如 `video_player`。仓库内的示例通过 `../` 引用本地插件；仓库外的应用应使用已发布的包版本或自己的源码依赖。
+需要 Flutter 3.22、Dart 3.4 或更新版本。Android 最低 API 24，iOS 最低 13.0。在应用中加入 `meshstream_p2p` 和播放器依赖，例如 `video_player`。仓库内示例固定使用已发布的 `meshstream_p2p: 1.0.0`，用于验证公网包安装链路。
 
-Android SDK 从公开的 MeshStream Maven 仓库分发。将以下仓库加入宿主应用的依赖仓库配置，例如 Kotlin Gradle settings：
+插件固定使用公开的 Android SDK `io.meshstream:meshstream-android-sdk:1.0.4`。将 MeshStream Maven 仓库加入宿主应用的依赖仓库配置，例如 Kotlin Gradle settings：
 
 ```kotlin
 dependencyResolutionManagement {
@@ -47,7 +47,7 @@ iOS 在 `flutter pub get` 后按 Flutter 常规 CocoaPods 流程安装：
 cd ios && pod install
 ```
 
-插件 podspec 使用公开的 `MeshStreamKit` 1.0.2 pod，无需私有 spec 仓库或本地 XCFramework 路径。
+插件 podspec 固定使用公开的 `MeshStreamKit` 1.0.4 pod，无需私有 spec 仓库或本地 XCFramework 路径。仓库内示例在当前 Flutter 工具链下以 iOS 15.0 或更新版本为目标。
 
 ## 开始播放
 
