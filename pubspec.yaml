@@ -1,8 +1,8 @@
 name: meshstream_p2p
 description: MeshStream P2P playback acceleration for Flutter.
-version: 1.0.4
-homepage: https://github.com/Mesh-Stream/meshstream-p2p-flutter-sdk
+homepage: https://meshstream.io
 repository: https://github.com/Mesh-Stream/meshstream-p2p-flutter-sdk
+version: 1.0.4
 
 environment:
   sdk: '>=3.4.0 <4.0.0'

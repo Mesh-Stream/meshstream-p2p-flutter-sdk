@@ -4,9 +4,9 @@ MeshStream adds peer-assisted delivery to Flutter playback on Android and iOS. I
 
 ## Requirements and installation
 
-Use Flutter 3.22 or newer and Dart 3.4 or newer. Android requires API 24 or newer; iOS requires 13.0 or newer. Add `meshstream_p2p` and a player package such as `video_player` to your app. The example uses a local path dependency on `../`; an app outside this repository should use the published package version or its own source dependency.
+Use Flutter 3.22 or newer and Dart 3.4 or newer. Android requires API 24 or newer; iOS requires 13.0 or newer. Add `meshstream_p2p` and a player package such as `video_player` to your app. The bundled example pins the published `meshstream_p2p: 1.0.0` package so its build verifies the public package path.
 
-The Android SDK is distributed from the public MeshStream Maven repository. Add this repository to your host app's dependency repositories (for Kotlin Gradle settings, for example):
+The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.4`. Add the MeshStream Maven repository to your host app's dependency repositories (for Kotlin Gradle settings, for example):
 
 ```kotlin
 dependencyResolutionManagement {
@@ -47,7 +47,7 @@ On iOS, use the normal Flutter CocoaPods flow after `flutter pub get`:
 cd ios && pod install
 ```
 
-The plugin podspec resolves the public `MeshStreamKit` 1.0.4 pod. No private spec repository or bundled XCFramework path is needed.
+The plugin podspec pins the public `MeshStreamKit` 1.0.4 pod. No private spec repository or bundled XCFramework path is needed. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain.
 
 ## Start playback
 
@@ -77,7 +77,7 @@ Supported source types are HLS (`m3u8`), MPEG-DASH (`mpd`), MP4 (`mp4`), and MP3
 
 ## Events and diagnostics
 
-Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. `cdnFallback` reports a CDN byte delta, not a playback mode transition: a native P2P session can still fetch some bytes from CDN. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every two seconds and displays the latest fallback reason.
+Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. `cdnFallback` reports a CDN byte delta, not a playback mode transition: a native P2P session can still fetch some bytes from CDN. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every five seconds and displays the latest fallback reason.
 
 ## Run the example
 

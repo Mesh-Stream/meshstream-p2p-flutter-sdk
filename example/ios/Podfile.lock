@@ -2,7 +2,7 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - meshstream_p2p (1.0.4):
+  - meshstream_p2p (1.0.0):
     - Flutter
     - MeshStreamKit (= 1.0.4)
   - MeshStreamKit (1.0.4)
@@ -31,12 +31,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
 SPEC CHECKSUMS:
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  meshstream_p2p: 6dc035bc3bc67dfa3b40d555713ed284a9fe85c5
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
+  meshstream_p2p: 4bc9585378dd2fdc6500064b6bce382035c04a56
   MeshStreamKit: 9cfbb753acf5d143c04c0496949b2821065e885d
-  video_player_avfoundation: e54d03b3b19f64f2c557354f72ce538387541ba6
+  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
 
-PODFILE CHECKSUM: e75fd5f9e0327357385a14f3fb61f3c3c0e51b99
+PODFILE CHECKSUM: b606df3a248c046c0270668b01c73d95ef72cc7d
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.17.0
