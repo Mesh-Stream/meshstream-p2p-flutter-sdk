@@ -1,0 +1,25 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.0.5",
+  "sourceRevision": "ae2b0b0",
+  "nativeDependencies": {
+    "ios": {"pod": "MeshStreamKit", "version": "1.0.7", "minimumOS": "iOS 15.0 / macOS 12.0"},
+    "android": {"maven": "io.meshstream:meshstream-android-sdk", "version": "1.0.6"}
+  },
+  "validation": {
+    "flutter": "3.47.8",
+    "dart": "3.13.7",
+    "pubGet": "passed",
+    "analyze": "passed",
+    "tests": "passed",
+    "pubDryRun": "passed with registry/layout warnings",
+    "iosPodLint": "blocked by Flutter 3.13 pod target 11.0 under Xcode 27; plugin target is iOS 15.0",
+    "physicalDevices": "pending"
+  },
+  "publication": {
+    "pubDev": "pending",
+    "githubPush": "passed",
+    "gitTag": "pending",
+    "publicInstall": "pending"
+  }
+}
