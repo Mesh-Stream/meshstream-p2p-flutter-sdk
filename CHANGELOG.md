@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Upgrade the public iOS dependency to MeshStreamKit 1.0.7 (iOS 15+).
+- Upgrade the public Android dependency to meshstream-android-sdk 1.0.6.
+
 ## 1.0.4
 
 - Upgrade the public iOS `MeshStreamKit` and Android `meshstream-android-sdk` dependencies to 1.0.4.

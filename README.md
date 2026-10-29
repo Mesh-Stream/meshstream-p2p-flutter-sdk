@@ -4,9 +4,9 @@ MeshStream adds peer-assisted delivery to Flutter playback on Android and iOS. I
 
 ## Requirements and installation
 
-Use Flutter 3.22 or newer and Dart 3.4 or newer. Android requires API 24 or newer; iOS requires 13.0 or newer. Add `meshstream_p2p` and a player package such as `video_player` to your app. The bundled example pins the published `meshstream_p2p: 1.0.0` package so its build verifies the public package path.
+Use Flutter 3.22 or newer and Dart 3.4 or newer. Android requires API 24 or newer; iOS requires 15.0 or newer. Add `meshstream_p2p` and a player package such as `video_player` to your app. The bundled example pins the published `meshstream_p2p: 1.0.0` package so its build verifies the public package path.
 
-The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.4`. Add the MeshStream Maven repository to your host app's dependency repositories (for Kotlin Gradle settings, for example):
+The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.6`. Add the MeshStream Maven repository to your host app's dependency repositories (for Kotlin Gradle settings, for example):
 
 ```kotlin
 dependencyResolutionManagement {
@@ -47,7 +47,7 @@ On iOS, use the normal Flutter CocoaPods flow after `flutter pub get`:
 cd ios && pod install
 ```
 
-The plugin podspec pins the public `MeshStreamKit` 1.0.4 pod. No private spec repository or bundled XCFramework path is needed. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain.
+The plugin podspec pins the public `MeshStreamKit` 1.0.7 pod. No private spec repository or bundled XCFramework path is needed. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain.
 
 ## Start playback
 
