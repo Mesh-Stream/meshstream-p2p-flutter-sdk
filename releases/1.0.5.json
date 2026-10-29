@@ -133,17 +133,118 @@
     "androidManifestSdk": {
       "minSdkVersion": "24",
       "targetSdkVersion": "36"
+    },
+    "publicInstall": {
+      "packageVersion": "1.0.5",
+      "source": "pub.dev hosted cache",
+      "archiveSha256": "b86bd789b84130d25e7dd6b5def40a3721be4d61048cfb645b3e387bbba18be9",
+      "fileCount": 110,
+      "archiveFilesMatch": true,
+      "androidIntegration": "passed",
+      "iosIntegration": "passed",
+      "runtime": {
+        "android": {
+          "summary": {
+            "time": "2026-10-29T15:25:28.223481Z",
+            "platform": "android",
+            "kind": "summary",
+            "maxPeers": 1,
+            "peerSamples": 1,
+            "maxPositionMs": 88760,
+            "httpDownloaded": 4759408,
+            "p2pDownloaded": 0,
+            "p2pUploaded": 2208493,
+            "p2pEnabled": true,
+            "trackerErrorEvents": 0,
+            "peerErrorEvents": 0
+          },
+          "cdnFallbackVerified": {
+            "time": "2026-10-29T15:25:34.353289Z",
+            "platform": "android",
+            "kind": "cdnFallbackVerified",
+            "httpBytesBefore": 5075436,
+            "httpBytesAfter": 5859036,
+            "httpBytesDelta": 783600,
+            "positionBeforeMs": 393757,
+            "positionAfterMs": 398862,
+            "peers": 0
+          },
+          "isolationVerified": {
+            "time": "2026-10-29T15:25:34.435952Z",
+            "platform": "android",
+            "kind": "isolationVerified",
+            "siblingSurvivedSessionClose": true,
+            "otherClientSurvivedClientClose": true,
+            "closedClientSessionRejected": true
+          },
+          "cleanup": {
+            "time": "2026-10-29T15:25:34.510318Z",
+            "platform": "android",
+            "kind": "cleanup",
+            "closed": true
+          }
+        },
+        "ios": {
+          "summary": {
+            "time": "2026-10-29T15:26:47.244055Z",
+            "platform": "ios",
+            "kind": "summary",
+            "maxPeers": 1,
+            "peerSamples": 2,
+            "maxPositionMs": 84935,
+            "httpDownloaded": 14878620,
+            "p2pDownloaded": 2860044,
+            "p2pUploaded": 0,
+            "p2pEnabled": true,
+            "trackerErrorEvents": 0,
+            "peerErrorEvents": 0
+          },
+          "cdnFallbackVerified": {
+            "time": "2026-10-29T15:26:53.388333Z",
+            "platform": "ios",
+            "kind": "cdnFallbackVerified",
+            "httpBytesBefore": 15538640,
+            "httpBytesAfter": 16336316,
+            "httpBytesDelta": 797676,
+            "positionBeforeMs": 390036,
+            "positionAfterMs": 395986,
+            "peers": 0
+          },
+          "isolationVerified": {
+            "time": "2026-10-29T15:26:53.412559Z",
+            "platform": "ios",
+            "kind": "isolationVerified",
+            "siblingSurvivedSessionClose": true,
+            "otherClientSurvivedClientClose": true,
+            "closedClientSessionRejected": true
+          },
+          "cleanup": {
+            "time": "2026-10-29T15:26:53.417509Z",
+            "platform": "ios",
+            "kind": "cleanup",
+            "closed": true
+          }
+        }
+      }
     }
   },
   "publication": {
-    "pubDev": "pending",
-    "githubPush": "pending final snapshot",
-    "gitTag": "1.0.5",
-    "publicInstall": "pending"
+    "pubDev": "passed",
+    "githubPush": "passed: 0a57685",
+    "gitTag": "passed: 1.0.5",
+    "publicInstall": "passed: public hosted package + Android device + iOS simulator"
   },
-  "status": "validated-candidate",
+  "status": "published",
   "sourceBaseCommit": "ae2b0b0",
   "sourceRevisionNote": "The matching 1.0.5 Git tag identifies the publication snapshot.",
   "report": "docs/validation/2026-10-29-flutter-1.0.5-release.md",
-  "sourceReference": "refs/tags/1.0.5"
+  "sourceReference": "refs/tags/1.0.5",
+  "artifact": {
+    "package": "meshstream_p2p",
+    "version": "1.0.5",
+    "sha256": "b86bd789b84130d25e7dd6b5def40a3721be4d61048cfb645b3e387bbba18be9",
+    "archiveUrl": "https://pub.dev/api/archives/meshstream_p2p-1.0.5.tar.gz",
+    "fileCount": 110,
+    "allFilesMatchPublicationSnapshot": true
+  }
 }
