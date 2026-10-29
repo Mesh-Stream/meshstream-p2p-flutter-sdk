@@ -404,6 +404,7 @@ private final class FakeRegistrar: NSObject, FlutterPluginRegistrar {
   func messenger() -> FlutterBinaryMessenger { binaryMessenger }
   func textures() -> FlutterTextureRegistry { fatalError("Textures are outside this plugin's contract") }
   func publish(_ value: NSObject) { published = value }
+  func valuePublished(byPlugin pluginKey: String) -> NSObject? { published }
   func register(_ factory: FlutterPlatformViewFactory, withId factoryId: String) {}
   func register(_ factory: FlutterPlatformViewFactory, withId factoryId: String,
     gestureRecognizersBlockingPolicy: FlutterPlatformViewGestureRecognizersBlockingPolicy) {}

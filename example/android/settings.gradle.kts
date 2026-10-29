@@ -29,7 +29,7 @@ dependencyResolutionManagement {
             content { includeGroup("io.flutter") }
         }
         maven {
-            url = uri("https://pub-61830e1369904d19af505ff74fd55ba4.r2.dev/maven")
+            url = uri("https://sdk.meshstream.net/maven")
             content { includeGroup("io.meshstream") }
         }
     }

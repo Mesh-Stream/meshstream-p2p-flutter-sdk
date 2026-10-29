@@ -92,6 +92,8 @@ void main() {
       await tester.runAsync(() async {
         final started = DateTime.now();
         while (DateTime.now().difference(started).inSeconds < seconds) {
+          expect(activePlayer.value.hasError, isFalse,
+              reason: activePlayer.value.errorDescription);
           final position = activePlayer.value.position.inMilliseconds;
           var bufferedMs = 0;
           for (final range in activePlayer.value.buffered) {
@@ -161,6 +163,70 @@ void main() {
       expect(maxPeers, greaterThan(0), reason: 'A live peer must connect.');
       expect(maxP2pDownloaded + maxP2pUploaded, greaterThan(0),
           reason: 'The peers must exchange media bytes.');
+
+      final beforeFallback = await activeSession.getStats();
+      var positionBeforeFallback = activePlayer.value.position.inMilliseconds;
+      await activeSession.setP2pEnabled(false);
+      if (const bool.fromEnvironment('MESHSTREAM_FALLBACK_SEEK')) {
+        final desired =
+            activePlayer.value.position + const Duration(seconds: 300);
+        final end = activePlayer.value.duration - const Duration(seconds: 30);
+        final target = desired < end ? desired : end;
+        await activePlayer.seekTo(target);
+        positionBeforeFallback = target.inMilliseconds;
+        await activePlayer.play();
+        record('fallbackSeek', {'targetMs': positionBeforeFallback});
+      }
+      await tester.runAsync(() async {
+        final started = DateTime.now();
+        while (DateTime.now().difference(started).inSeconds < 60) {
+          expect(activePlayer.value.hasError, isFalse,
+              reason: activePlayer.value.errorDescription);
+          final stats = await activeSession.getStats();
+          final position = activePlayer.value.position.inMilliseconds;
+          await activeSession.updateCurrentPositionMs(position);
+          if (stats.connectedPeers == 0 &&
+              stats.httpDownloaded > beforeFallback.httpDownloaded &&
+              position > positionBeforeFallback + 5000) {
+            record('cdnFallbackVerified', {
+              'httpBytesBefore': beforeFallback.httpDownloaded,
+              'httpBytesAfter': stats.httpDownloaded,
+              'httpBytesDelta':
+                  stats.httpDownloaded - beforeFallback.httpDownloaded,
+              'positionBeforeMs': positionBeforeFallback,
+              'positionAfterMs': position,
+              'peers': stats.connectedPeers,
+            });
+            return;
+          }
+          await Future<void>.delayed(const Duration(seconds: 2));
+        }
+        fail('Disabling P2P must allow continued playback through CDN.');
+      });
+
+      final otherClient = await MeshStream.create(MeshStreamConfig(key: key));
+      try {
+        final otherSession = await otherClient.createPlaybackSession(
+          PlaybackSessionOptions(url: source),
+        );
+        final sibling = await client.createPlaybackSession(
+          PlaybackSessionOptions(url: source),
+        );
+        await activeSession.close();
+        await sibling.getStats();
+        await otherSession.getStats();
+        await client.close();
+        await expectLater(
+            sibling.getStats(), throwsA(isA<MeshStreamException>()));
+        await otherSession.getStats();
+        record('isolationVerified', {
+          'siblingSurvivedSessionClose': true,
+          'otherClientSurvivedClientClose': true,
+          'closedClientSessionRejected': true,
+        });
+      } finally {
+        await otherClient.close();
+      }
     } finally {
       await events?.cancel();
       await player?.dispose();

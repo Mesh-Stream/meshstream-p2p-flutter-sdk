@@ -1,6 +1,6 @@
 # Live iOS/Android interoperability test
 
-This test uses the published `meshstream_p2p: 1.0.0` Flutter package, its public
+This test uses the published `meshstream_p2p: 1.0.5` Flutter package, its public
 native SDK dependencies, `video_player`, and the public MeshStream services. It
 does not use fake backends. Run it on iOS and Android at the same time so each
 can discover the other.
@@ -9,7 +9,9 @@ Create a private JSON file outside Git with `MESHSTREAM_ANDROID_KEY` and
 `MESHSTREAM_IOS_KEY`. Do not commit that file or build outputs containing it.
 Optional settings are `MESHSTREAM_SOURCE` (a media playlist, not an adaptive
 master), `MESHSTREAM_CONTENT_ID` (the same on both platforms), and
-`MESHSTREAM_SECONDS` (default 180).
+`MESHSTREAM_SECONDS` (default 180). For VOD acceptance, set
+`MESHSTREAM_FALLBACK_SEEK` to `true` to seek forward after disabling P2P,
+so buffered playback alone cannot satisfy the CDN fallback check.
 
 From `example/`, run these commands in separate terminals, replacing the device
 IDs and private file path:
@@ -31,7 +33,9 @@ repository's public Mux HLS media playlist. The test logs structured
 `MESHSTREAM_INTEROP` samples without Keys or signed playback URLs. It checks that
 playback advances, live authorization succeeds, a peer connects, and P2P media
 bytes increase. The player, session, client, and event subscription are closed
-afterward, including after a failed assertion.
+afterward, including after a failed assertion. It also disables P2P and verifies
+continued playback through CDN, then checks session/client isolation and closure.
+This controlled fallback does not simulate an abrupt network or peer failure.
 
 A simulator pass covers simulator interoperability. Record physical-device
 acceptance separately.

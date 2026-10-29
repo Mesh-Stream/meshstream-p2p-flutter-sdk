@@ -1,25 +1,149 @@
 {
   "package": "meshstream_p2p",
   "version": "1.0.5",
-  "sourceRevision": "ae2b0b0",
   "nativeDependencies": {
-    "ios": {"pod": "MeshStreamKit", "version": "1.0.7", "minimumOS": "iOS 15.0 / macOS 12.0"},
-    "android": {"maven": "io.meshstream:meshstream-android-sdk", "version": "1.0.6"}
+    "ios": {
+      "pod": "MeshStreamKit",
+      "version": "1.0.7",
+      "minimumOS": "iOS 15.0 / macOS 12.0"
+    },
+    "android": {
+      "maven": "io.meshstream:meshstream-android-sdk",
+      "version": "1.0.6"
+    }
   },
   "validation": {
     "flutter": "3.47.8",
     "dart": "3.13.7",
     "pubGet": "passed",
     "analyze": "passed",
-    "tests": "passed",
-    "pubDryRun": "passed with registry/layout warnings",
-    "iosPodLint": "blocked by Flutter 3.13 pod target 11.0 under Xcode 27; plugin target is iOS 15.0",
-    "physicalDevices": "pending"
+    "dartUnitTests": 39,
+    "exampleTests": 6,
+    "androidNativeUnitTests": 14,
+    "androidBuild": "passed ARM64 debug; public Maven native 1.0.6",
+    "iosBuild": "passed ARM64 simulator; public CocoaPods MeshStreamKit 1.0.7",
+    "androidPhysicalDevice": {
+      "status": "passed",
+      "model": "PFJM10",
+      "os": "Android 13",
+      "architecture": "arm64-v8a"
+    },
+    "iosSimulator": {
+      "status": "passed",
+      "model": "iPhone 18 Pro",
+      "os": "iOS 27.0",
+      "architecture": "arm64"
+    },
+    "iosPhysicalDevice": "pending",
+    "runtimeEvidence": {
+      "android": {
+        "summary": {
+          "time": "2026-10-29T15:13:31.012224Z",
+          "platform": "android",
+          "kind": "summary",
+          "maxPeers": 1,
+          "peerSamples": 16,
+          "maxPositionMs": 86696,
+          "httpDownloaded": 2668848,
+          "p2pDownloaded": 2406588,
+          "p2pUploaded": 240,
+          "p2pEnabled": true,
+          "trackerErrorEvents": 0,
+          "peerErrorEvents": 0
+        },
+        "cdnFallbackVerified": {
+          "time": "2026-10-29T15:13:37.123221Z",
+          "platform": "android",
+          "kind": "cdnFallbackVerified",
+          "httpBytesBefore": 2668848,
+          "httpBytesAfter": 3452448,
+          "httpBytesDelta": 783600,
+          "positionBeforeMs": 391690,
+          "positionAfterMs": 397142,
+          "peers": 0
+        },
+        "isolationVerified": {
+          "time": "2026-10-29T15:13:37.201541Z",
+          "platform": "android",
+          "kind": "isolationVerified",
+          "siblingSurvivedSessionClose": true,
+          "otherClientSurvivedClientClose": true,
+          "closedClientSessionRejected": true
+        },
+        "cleanup": {
+          "time": "2026-10-29T15:13:37.273679Z",
+          "platform": "android",
+          "kind": "cleanup",
+          "closed": true
+        },
+        "p2pWindowOffloadRatio": 0.4741637959773308,
+        "playerErrors": 0
+      },
+      "ios": {
+        "summary": {
+          "time": "2026-10-29T15:13:26.648545Z",
+          "platform": "ios",
+          "kind": "summary",
+          "maxPeers": 1,
+          "peerSamples": 16,
+          "maxPositionMs": 84939,
+          "httpDownloaded": 13053008,
+          "p2pDownloaded": 0,
+          "p2pUploaded": 2627427,
+          "p2pEnabled": true,
+          "trackerErrorEvents": 0,
+          "peerErrorEvents": 0
+        },
+        "cdnFallbackVerified": {
+          "time": "2026-10-29T15:13:32.799020Z",
+          "platform": "ios",
+          "kind": "cdnFallbackVerified",
+          "httpBytesBefore": 13744180,
+          "httpBytesAfter": 14537368,
+          "httpBytesDelta": 793188,
+          "positionBeforeMs": 389940,
+          "positionAfterMs": 395890,
+          "peers": 0
+        },
+        "isolationVerified": {
+          "time": "2026-10-29T15:13:32.805226Z",
+          "platform": "ios",
+          "kind": "isolationVerified",
+          "siblingSurvivedSessionClose": true,
+          "otherClientSurvivedClientClose": true,
+          "closedClientSessionRejected": true
+        },
+        "cleanup": {
+          "time": "2026-10-29T15:13:32.807623Z",
+          "platform": "ios",
+          "kind": "cleanup",
+          "closed": true
+        },
+        "p2pWindowOffloadRatio": 0.0,
+        "playerErrors": 0
+      }
+    },
+    "testOrigin": "Local HLS origin, 128 KiB/s per segment request; Android reaches it through USB reverse; tracker and peer transports use real public services",
+    "reverseP2pDirection": "Android -> iOS payload not confirmed",
+    "iosNativeXCTest": {
+      "passed": 16,
+      "failed": 0
+    },
+    "pubDryRun": "passed with no validation errors; version-jump hint is intentional",
+    "androidManifestSdk": {
+      "minSdkVersion": "24",
+      "targetSdkVersion": "36"
+    }
   },
   "publication": {
     "pubDev": "pending",
-    "githubPush": "passed",
-    "gitTag": "pending",
+    "githubPush": "pending final snapshot",
+    "gitTag": "1.0.5",
     "publicInstall": "pending"
-  }
+  },
+  "status": "validated-candidate",
+  "sourceBaseCommit": "ae2b0b0",
+  "sourceRevisionNote": "The matching 1.0.5 Git tag identifies the publication snapshot.",
+  "report": "docs/validation/2026-10-29-flutter-1.0.5-release.md",
+  "sourceReference": "refs/tags/1.0.5"
 }

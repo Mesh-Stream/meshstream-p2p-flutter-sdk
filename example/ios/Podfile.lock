@@ -2,10 +2,10 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - meshstream_p2p (1.0.0):
+  - meshstream_p2p (1.0.5):
     - Flutter
-    - MeshStreamKit (= 1.0.4)
-  - MeshStreamKit (1.0.4)
+    - MeshStreamKit (= 1.0.7)
+  - MeshStreamKit (1.0.7)
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -33,8 +33,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
-  meshstream_p2p: 4bc9585378dd2fdc6500064b6bce382035c04a56
-  MeshStreamKit: 9cfbb753acf5d143c04c0496949b2821065e885d
+  meshstream_p2p: 671da965244be524d686a38100815478a96957e3
+  MeshStreamKit: 1b222c6350e2d73d94a4aede7f299981b7bd1268
   video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
 
 PODFILE CHECKSUM: b606df3a248c046c0270668b01c73d95ef72cc7d
