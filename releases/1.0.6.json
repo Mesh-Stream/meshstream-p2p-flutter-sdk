@@ -5,13 +5,13 @@
     "ios": {"pod": "MeshStreamKit", "version": "1.0.8", "minimumOS": "iOS 15.0"},
     "android": {"maven": "io.meshstream:meshstream-android-sdk", "version": "1.0.7", "minSdk": 24}
   },
-  "sourceRevision": "pending-release-commit",
+  "sourceRevision": "9551a41",
   "validation": {
-    "flutterTest": "pending",
-    "flutterAnalyze": "pending",
-    "pubDryRun": "pending",
-    "androidExample": "pending",
-    "iosSimulator": "pending",
+    "flutterTest": "passed",
+    "flutterAnalyze": "passed",
+    "pubDryRun": "passed with git-state warning",
+    "androidExample": "passed debug APK with public Maven 1.0.7",
+    "iosSimulator": "passed simulator build with CocoaPods 1.0.8",
     "iosDevice": "pending"
   },
   "status": "prepared"
