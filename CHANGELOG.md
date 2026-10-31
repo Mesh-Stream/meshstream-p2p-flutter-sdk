@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.6
+
+- Upgrade the public iOS dependency to MeshStreamKit 1.0.8.
+- Upgrade the public Android dependency to meshstream-android-sdk 1.0.7.
+- Includes the native proxy shutdown fix across both platforms.
+
 ## 1.0.5
 
 - Use the stable public Maven endpoint at `https://sdk.meshstream.net/maven`.

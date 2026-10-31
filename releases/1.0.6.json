@@ -1,0 +1,18 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.0.6",
+  "nativeDependencies": {
+    "ios": {"pod": "MeshStreamKit", "version": "1.0.8", "minimumOS": "iOS 15.0"},
+    "android": {"maven": "io.meshstream:meshstream-android-sdk", "version": "1.0.7", "minSdk": 24}
+  },
+  "sourceRevision": "pending-release-commit",
+  "validation": {
+    "flutterTest": "pending",
+    "flutterAnalyze": "pending",
+    "pubDryRun": "pending",
+    "androidExample": "pending",
+    "iosSimulator": "pending",
+    "iosDevice": "pending"
+  },
+  "status": "prepared"
+}

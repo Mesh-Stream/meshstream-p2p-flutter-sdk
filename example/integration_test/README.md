@@ -1,6 +1,6 @@
 # Live iOS/Android interoperability test
 
-This test uses the published `meshstream_p2p: 1.0.5` Flutter package, its public
+This test uses the published `meshstream_p2p: 1.0.6` Flutter package, its public
 native SDK dependencies, `video_player`, and the public MeshStream services. It
 does not use fake backends. Run it on iOS and Android at the same time so each
 can discover the other.
