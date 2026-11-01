@@ -38,7 +38,8 @@
     "androidPublicExample": "passed: public package build for armeabi-v7a, arm64-v8a, x86_64",
     "iosPublicExample": "passed: public package simulator build, MeshStreamKit 1.0.8",
     "iosSimulatorCdnRuntime": "passed: public package, video decoded 320x184, playback position 6428 ms, HTTP bytes 1104912, local proxy 127.0.0.1; player/session/client closed",
-    "androidSimulatorCdnRuntime": "passed: public package, ARM64 Android 15 AVD, video decoded 320x184, playback position 6391 ms, HTTP bytes 402580, local proxy 127.0.0.1; player/session/client closed"
+    "androidSimulatorCdnRuntime": "passed: public package, ARM64 Android 15 AVD, video decoded 320x184, playback position 6391 ms, HTTP bytes 402580, local proxy 127.0.0.1; player/session/client closed",
+    "androidDeviceCdnRuntime": "passed: public package 1.0.8, PFJM10 Android 13 ARM64, isolated verification application, decoded 320x184, position 6335 ms, HTTP bytes 550036, loopback 127.0.0.1, P2P disabled; player/session/client closed"
   },
   "publication": {
     "github": "main and tag 1.0.8",
