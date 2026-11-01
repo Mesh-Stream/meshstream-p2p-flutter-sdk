@@ -32,8 +32,22 @@
     "androidNativeTests": "passed: 14 JUnit tests",
     "androidLint": "passed",
     "androidExample": "passed: debug APK for armeabi-v7a, arm64-v8a, x86_64",
-    "iosSimulatorBuild": "passed: Xcode 27.2, public CocoaPods MeshStreamKit 1.0.8"
+    "iosSimulatorBuild": "passed: Xcode 27.2, public CocoaPods MeshStreamKit 1.0.8",
+    "publicInstall": "passed: pub.dev hosted exact version 1.0.8, no override",
+    "publicArchive": "passed: pub.dev archive SHA-256 matches metadata; package manifests and READMEs match candidate",
+    "androidPublicExample": "passed: public package build for armeabi-v7a, arm64-v8a, x86_64",
+    "iosPublicExample": "passed: public package simulator build, MeshStreamKit 1.0.8",
+    "iosSimulatorCdnRuntime": "passed: public package, video decoded 320x184, playback position 6428 ms, HTTP bytes 1104912, local proxy 127.0.0.1; player/session/client closed",
+    "androidSimulatorCdnRuntime": "passed: public package, ARM64 Android 15 AVD, video decoded 320x184, playback position 6391 ms, HTTP bytes 402580, local proxy 127.0.0.1; player/session/client closed"
   },
-  "publication": {},
-  "status": "validated candidate"
+  "publication": {
+    "github": "main and tag 1.0.8",
+    "pubdev": "published: https://pub.dev/packages/meshstream_p2p/versions/1.0.8",
+    "publicInstall": "verified: exact hosted package; Android and iOS simulator builds"
+  },
+  "status": "published",
+  "artifact": {
+    "url": "https://pub.dev/api/archives/meshstream_p2p-1.0.8.tar.gz",
+    "sha256": "8873c502e1b80f8c7787f79300fe80edbeb924ffc430625e55317fac1d237ede"
+  }
 }
