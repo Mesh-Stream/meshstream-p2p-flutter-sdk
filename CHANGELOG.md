@@ -1,10 +1,16 @@
 # Changelog
 
+## 1.0.8 - 2026-11-01
+
+- Upgrade Android to meshstream-android-sdk 1.0.9 with armeabi-v7a, arm64-v8a, x86, and x86_64.
+- Retain iOS MeshStreamKit 1.0.8 and the plugin minimums of Android API 21 and iOS 15.
+- Update installation guidance, emulator architecture requirements, and examples.
+
 ## 1.0.7 - 2026-11-01
 
 - Upgrade the public Android dependency to meshstream-android-sdk 1.0.8; retain iOS MeshStreamKit 1.0.8.
 - Lower the plugin Android declaration from API 24 to API 21; the app must still meet its framework and player requirements.
-- Document plugin requirements separately from example targets and device acceptance; API 21 device acceptance is pending.
+- Document plugin requirements separately from example targets and device acceptance.
 
 ## 1.0.6
 

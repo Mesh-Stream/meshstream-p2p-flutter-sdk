@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'meshstream_p2p'
-  s.version          = '1.0.7'
+  s.version          = '1.0.8'
   s.summary          = 'MeshStream P2P playback acceleration for Flutter.'
   s.description      = <<-DESC
 MeshStream P2P playback acceleration for Flutter.

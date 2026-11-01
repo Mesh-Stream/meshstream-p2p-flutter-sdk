@@ -1,0 +1,39 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.0.8",
+  "nativeDependencies": {
+    "android": {
+      "maven": "io.meshstream:meshstream-android-sdk",
+      "version": "1.0.9",
+      "minSdk": 21,
+      "abi": [
+        "armeabi-v7a",
+        "arm64-v8a",
+        "x86",
+        "x86_64"
+      ],
+      "aarSha256": "05fe7f9e588cc893e61a34e6e6be410cfb06b47a8e0c692b78e7be2c85d60a43"
+    },
+    "ios": {
+      "pod": "MeshStreamKit",
+      "version": "1.0.8",
+      "runtimeVersion": "1.0.7",
+      "minimumOS": "iOS 15.0"
+    }
+  },
+  "compatibility": {
+    "effectiveMinimum": "max(plugin, framework/runtime, player)",
+    "exampleMinSdk": 24
+  },
+  "validation": {
+    "flutterAnalyze": "passed",
+    "dartTests": "passed: 39 tests",
+    "exampleTests": "passed: 6 tests",
+    "androidNativeTests": "passed: 14 JUnit tests",
+    "androidLint": "passed",
+    "androidExample": "passed: debug APK for armeabi-v7a, arm64-v8a, x86_64",
+    "iosSimulatorBuild": "passed: Xcode 27.2, public CocoaPods MeshStreamKit 1.0.8"
+  },
+  "publication": {},
+  "status": "validated candidate"
+}
