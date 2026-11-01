@@ -1,0 +1,45 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.0.7",
+  "nativeDependencies": {
+    "android": {
+      "maven": "io.meshstream:meshstream-android-sdk",
+      "version": "1.0.8",
+      "minSdk": 21,
+      "abi": [
+        "armeabi-v7a",
+        "arm64-v8a"
+      ]
+    },
+    "ios": {
+      "pod": "MeshStreamKit",
+      "version": "1.0.8",
+      "runtimeVersion": "1.0.7",
+      "minimumOS": "iOS 15.0"
+    }
+  },
+  "compatibility": {
+    "effectiveMinimum": "max(plugin, framework/runtime, player)",
+    "minimumApiDeviceAcceptance": "pending",
+    "exampleMinSdk": 24
+  },
+  "validation": {
+    "flutterAnalyze": "passed",
+    "dartTests": "passed: 39 tests",
+    "exampleTests": "passed: 6 tests",
+    "androidNativeTests": "passed: 14 JUnit tests",
+    "androidLint": "passed: plugin minSdk 21",
+    "androidExample": "passed: debug APK, armeabi-v7a + arm64-v8a",
+    "iosSimulator": "passed: Debug Runner.app build, public CocoaPods MeshStreamKit 1.0.8",
+    "pubDryRun": "passed: only uncommitted git-state warning; rerun after release commit",
+    "androidDevice": "pending: no connected device",
+    "iosDevice": "pending: no connected device",
+    "api21Device": "pending"
+  },
+  "publication": {
+    "github": "release source prepared for main and tag 1.0.7",
+    "pubdev": "pending",
+    "publicInstall": "pending"
+  },
+  "status": "candidate validated; publication pending"
+}
