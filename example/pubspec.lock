@@ -171,10 +171,10 @@ packages:
     dependency: "direct main"
     description:
       name: meshstream_p2p
-      sha256: "25433d413488a5496c23637e581113341c5c62a9e2af3e6acb9e9fb37b7f692e"
+      sha256: ce28675c870d56437f39c372d30ad6a1564a50229d978d7e701c6672da5f4c9c
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.7"
   meta:
     dependency: transitive
     description:

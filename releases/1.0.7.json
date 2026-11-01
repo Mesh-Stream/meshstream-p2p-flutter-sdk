@@ -31,15 +31,26 @@
     "androidLint": "passed: plugin minSdk 21",
     "androidExample": "passed: debug APK, armeabi-v7a + arm64-v8a",
     "iosSimulator": "passed: Debug Runner.app build, public CocoaPods MeshStreamKit 1.0.8",
-    "pubDryRun": "passed: only uncommitted git-state warning; rerun after release commit",
+    "pubDryRun": "passed: 0 warnings after release commit",
     "androidDevice": "pending: no connected device",
-    "iosDevice": "pending: no connected device",
-    "api21Device": "pending"
+    "iosDevice": "pending: paired iPhone connected over local network but locked; runtime acceptance not performed",
+    "api21Device": "pending",
+    "publicInstall": "passed: exact pub.dev 1.0.7; resolved hosted package, no dependency override",
+    "androidPublicExample": "passed: debug APK from pub.dev 1.0.7, armeabi-v7a + arm64-v8a",
+    "iosPublicExample": "passed: simulator build from pub.dev 1.0.7, CocoaPods MeshStreamKit 1.0.8",
+    "publicArchive": "passed: SHA-256 matches pub.dev metadata; all SDK files match source; Git example updated to current public version after publication"
   },
   "publication": {
-    "github": "release source prepared for main and tag 1.0.7",
-    "pubdev": "pending",
-    "publicInstall": "pending"
+    "github": "main and tag 1.0.7",
+    "pubdev": "published: https://pub.dev/packages/meshstream_p2p/versions/1.0.7",
+    "publicInstall": "verified: pub.dev hosted 1.0.7, Android and iOS simulator builds"
   },
-  "status": "candidate validated; publication pending"
+  "status": "published; device acceptance pending",
+  "artifact": {
+    "url": "https://pub.dev/api/archives/meshstream_p2p-1.0.7.tar.gz",
+    "sha256": "ce28675c870d56437f39c372d30ad6a1564a50229d978d7e701c6672da5f4c9c"
+  },
+  "buildArtifacts": {
+    "androidApkSha256": "63936cd2da5ee22ed94ed6ad0b02a5650e79b48eb1092cd048d34f791290039b"
+  }
 }
