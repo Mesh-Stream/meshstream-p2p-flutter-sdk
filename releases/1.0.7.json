@@ -33,7 +33,7 @@
     "iosSimulator": "passed: Debug Runner.app build, public CocoaPods MeshStreamKit 1.0.8",
     "pubDryRun": "passed: 0 warnings after release commit",
     "androidDevice": "pending: no connected device",
-    "iosDevice": "pending: paired iPhone connected over local network but locked; runtime acceptance not performed",
+    "iosDevice": "passed: signed Debug/Release device build; devicectl installed and launched org Flutter bundle net.meshstream.meshstreamP2pExample on iPhone 17 iOS 26.6.1 over local network; playback/P2P runtime requires key and was not run",
     "api21Device": "pending",
     "publicInstall": "passed: exact pub.dev 1.0.7; resolved hosted package, no dependency override",
     "androidPublicExample": "passed: debug APK from pub.dev 1.0.7, armeabi-v7a + arm64-v8a",
