@@ -45,7 +45,7 @@
     "pubdev": "published: https://pub.dev/packages/meshstream_p2p/versions/1.0.7",
     "publicInstall": "verified: pub.dev hosted 1.0.7, Android and iOS simulator builds"
   },
-  "status": "published; device acceptance pending",
+  "status": "published; iOS device launch verified; Android device and media runtime acceptance pending",
   "artifact": {
     "url": "https://pub.dev/api/archives/meshstream_p2p-1.0.7.tar.gz",
     "sha256": "ce28675c870d56437f39c372d30ad6a1564a50229d978d7e701c6672da5f4c9c"
