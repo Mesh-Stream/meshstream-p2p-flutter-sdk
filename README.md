@@ -6,12 +6,34 @@ MeshStream adds peer-assisted delivery to Flutter playback on Android and iOS. I
 
 The Android dependency includes `armeabi-v7a`, `arm64-v8a`, `x86`, and `x86_64` for matching devices and emulators. Your app must also meet the OS and architecture requirements of its framework and player.
 
-Use Flutter 3.22 or newer and Dart 3.4 or newer. The plugin declares Android API 21+ and iOS 15.0+. Your app must meet the highest minimum OS version required by this plugin, the Flutter engine, and your player. The bundled example requires Android API 24+. Add `meshstream_p2p` and a player package such as `video_player` to your app. Install `meshstream_p2p: 1.0.8` from pub.dev. The bundled example uses this version.
+Use Flutter 3.22 or newer and Dart 3.4 or newer. The plugin declares Android API 21+ and iOS 15.0+. Your app must meet the highest minimum OS version required by this plugin, the Flutter engine, and your player. The bundled example requires Android API 24+. Add `meshstream_p2p` and a player package such as `video_player` to your app. Install `meshstream_p2p` from pub.dev.
 
-The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.9`. Add the MeshStream Maven repository to your host app's dependency repositories (for Kotlin Gradle settings, for example):
+The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.10`. Choose one configuration that matches how your project manages repositories. The examples below use Kotlin DSL.
+
+### Default Flutter projects
+
+Add the MeshStream repository to the existing `allprojects.repositories` block in `android/build.gradle.kts`, retaining the other repositories:
+
+```kotlin
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://sdk.meshstream.net/maven")
+            content { includeGroup("io.meshstream") }
+        }
+    }
+}
+```
+
+### Projects managing repositories in settings
+
+Merge the following configuration into `dependencyResolutionManagement` in `android/settings.gradle.kts`. Set `PREFER_SETTINGS` explicitly so settings repositories take precedence. Retain Google, Maven Central, the Flutter engine repository, and any repositories required by your application:
 
 ```kotlin
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
@@ -35,8 +57,8 @@ MeshStream playback URLs use a local HTTP proxy. In an Android host app, allow c
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
     <domain-config cleartextTrafficPermitted="true">
-        <domain>127.0.0.1</domain>
-        <domain>localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
     </domain-config>
 </network-security-config>
 ```
@@ -49,7 +71,7 @@ On iOS, use the normal Flutter CocoaPods flow after `flutter pub get`:
 cd ios && pod install
 ```
 
-The plugin podspec pins the public `MeshStreamKit` 1.0.8 pod. No private spec repository or bundled XCFramework path is needed. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain.
+The plugin podspec pins `MeshStreamKit` 1.0.10. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain. In `ios/Runner/Info.plist`, set `NSAppTransportSecurity` → `NSAllowsLocalNetworking` to `true`, merging it into any existing ATS dictionary while retaining other restrictions.
 
 ## Start playback
 
@@ -86,7 +108,9 @@ Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the
 ```sh
 cd example
 flutter pub get
-flutter run
+flutter run --target lib/main.dart
 ```
 
-Enter your own Key and an accessible source URL in the app. The fields contain only non-working hints. The example has widget tests that use fake backends and do not require service access.
+Enter your own Key and an accessible source URL in the app. The fields contain only non-working hints. Add `-d DEVICE_ID` to select a connected device.
+
+For a standalone Android Demo, run `flutter run --release --target lib/main.dart -d YOUR_ANDROID_DEVICE_ID`. To produce an APK, run `flutter build apk --release --target lib/main.dart`; the output is `build/app/outputs/flutter-apk/app-release.apk`. Configure your application's ID, version, and production signing before publishing it.

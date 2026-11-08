@@ -1,0 +1,53 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.0.9",
+  "nativeDependencies": {
+    "android": {
+      "maven": "io.meshstream:meshstream-android-sdk",
+      "version": "1.0.10",
+      "minSdk": 21,
+      "abi": [
+        "armeabi-v7a",
+        "arm64-v8a",
+        "x86",
+        "x86_64"
+      ],
+      "aarSha256": "77a2ae287168c9e1eec858a7d51f7a253d6184ce0d9b91edb459d47e6d467614"
+    },
+    "ios": {
+      "pod": "MeshStreamKit",
+      "version": "1.0.10",
+      "runtimeVersion": "1.0.10",
+      "minimumOS": "iOS 15.0",
+      "zipSha256": "1f19243273091916cc5877d383e1ec08997938316d9c34bc71e2ff601727f0f9"
+    }
+  },
+  "compatibility": {
+    "effectiveMinimum": "max(plugin, framework/runtime, player)",
+    "exampleMinSdk": 24
+  },
+  "validation": {
+    "date": "2026-11-09",
+    "publicNativeDependencies": "verified-download-and-checksum",
+    "android": {
+      "build": "debug-apk-passed",
+      "nativeUnitTestsPassed": 14,
+      "lint": "passed",
+      "emulatorCdnPlaybackAndClose": "passed",
+      "deviceCdnPlaybackAndClose": "passed"
+    },
+    "ios": {
+      "simulatorBuild": "passed",
+      "simulatorCdnPlaybackAndClose": "passed",
+      "nativeVersion": "1.0.10"
+    },
+    "dartTestsPassed": 39,
+    "exampleTestsPassed": 6,
+    "analyze": "passed",
+    "p2pTransfer": "not-verified"
+  },
+  "publication": {
+    "status": "not-published"
+  },
+  "status": "local-candidate"
+}

@@ -6,12 +6,34 @@ MeshStream 为 Android 和 iOS 上的 Flutter 播放增加 P2P 辅助分发。�
 
 Android 依赖包含 `armeabi-v7a`、`arm64-v8a`、`x86` 和 `x86_64`，可用于相应架构的真机与模拟器；应用仍需满足框架、基座及播放器的系统和架构要求。
 
-需要 Flutter 3.22、Dart 3.4 或更新版本。插件 Android 声明下限为 API 21，iOS 为 15.0。应用实际下限取插件、Flutter 引擎和播放器要求的最大值；示例需要 Android API 24 及以上。在应用中加入 `meshstream_p2p` 和播放器依赖，例如 `video_player`。仓库内示例使用 `meshstream_p2p: 1.0.8`。
+需要 Flutter 3.22、Dart 3.4 或更新版本。插件 Android 声明下限为 API 21，iOS 为 15.0。应用实际下限取插件、Flutter 引擎和播放器要求的最大值；示例需要 Android API 24 及以上。在应用中加入 `meshstream_p2p` 和播放器依赖，例如 `video_player`。从 pub.dev 安装 `meshstream_p2p`。
 
-插件固定使用公开的 Android SDK `io.meshstream:meshstream-android-sdk:1.0.9`。将 MeshStream Maven 仓库加入宿主应用的依赖仓库配置，例如 Kotlin Gradle settings：
+插件固定使用 Android SDK `io.meshstream:meshstream-android-sdk:1.0.10`。根据工程当前的仓库管理方式选择下面一种配置。以下示例使用 Kotlin DSL。
+
+### Flutter 默认工程
+
+在 `android/build.gradle.kts` 已有的 `allprojects.repositories` 中添加 MeshStream 仓库，保留原有仓库：
+
+```kotlin
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://sdk.meshstream.net/maven")
+            content { includeGroup("io.meshstream") }
+        }
+    }
+}
+```
+
+### 使用 settings 集中管理仓库的工程
+
+在 `android/settings.gradle.kts` 的 `dependencyResolutionManagement` 中合并下面的配置。显式设置 `PREFER_SETTINGS`，让 settings 中的仓库生效；同时保留 Google、Maven Central、Flutter 引擎及业务所需的仓库：
 
 ```kotlin
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
@@ -35,8 +57,8 @@ MeshStream 播放 URL 会使用本机 HTTP 代理。Android 宿主应用只需�
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />
     <domain-config cleartextTrafficPermitted="true">
-        <domain>127.0.0.1</domain>
-        <domain>localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
     </domain-config>
 </network-security-config>
 ```
@@ -49,7 +71,7 @@ iOS 在 `flutter pub get` 后按 Flutter 常规 CocoaPods 流程安装：
 cd ios && pod install
 ```
 
-插件 podspec 固定使用公开的 `MeshStreamKit` 1.0.8 pod，无需私有 spec 仓库或本地 XCFramework 路径。仓库内示例在当前 Flutter 工具链下以 iOS 15.0 或更新版本为目标。
+插件 podspec 固定使用 `MeshStreamKit` 1.0.10。仓库内示例在当前 Flutter 工具链下以 iOS 15.0 或更新版本为目标。在 `ios/Runner/Info.plist` 中设置 `NSAppTransportSecurity` → `NSAllowsLocalNetworking = true`，已有 ATS 字典时合并该设置并保留其他限制。
 
 ## 开始播放
 
@@ -86,7 +108,9 @@ await controller.play();
 ```sh
 cd example
 flutter pub get
-flutter run
+flutter run --target lib/main.dart
 ```
 
-在应用中输入自己的 Key 和可访问的源 URL。字段仅含无法工作的提示值。示例的 widget 测试使用假后端，不需要访问服务。
+在应用中输入自己的 Key 和可访问的源 URL。字段仅含无法工作的提示值。连接多个设备时添加 `-d 设备ID`。
+
+需要独立运行 Android Demo 时，执行 `flutter run --release --target lib/main.dart -d YOUR_ANDROID_DEVICE_ID`，将设备 ID 替换为实际值。分发 APK 时执行 `flutter build apk --release --target lib/main.dart`，产物为 `build/app/outputs/flutter-apk/app-release.apk`。发布自己的应用前配置应用 ID、版本及正式签名。
