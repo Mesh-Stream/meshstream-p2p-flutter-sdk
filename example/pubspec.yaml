@@ -19,9 +19,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Use this repository's wrapper while validating the next release.
-  meshstream_p2p:
-    path: ../
+  # Verify the exact package published on pub.dev.
+  meshstream_p2p: 1.0.9
   video_player: ^2.9.3
 
   # The following adds the Cupertino Icons font to your application.

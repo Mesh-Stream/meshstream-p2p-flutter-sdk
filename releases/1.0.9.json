@@ -44,10 +44,25 @@
     "dartTestsPassed": 39,
     "exampleTestsPassed": 6,
     "analyze": "passed",
-    "p2pTransfer": "not-verified"
+    "p2pTransfer": "not-verified",
+    "publicExactVersionInstall": "passed",
+    "publicExampleTestsPassed": 6,
+    "publicAndroidBuild": "passed",
+    "publicIOSSimulatorBuild": "passed",
+    "publicAndroidCdnPlaybackAndClose": "passed",
+    "publicIOSSimulatorCdnPlaybackAndClose": "passed"
   },
   "publication": {
-    "status": "not-published"
+    "status": "published",
+    "channel": "pub.dev",
+    "version": "1.0.9",
+    "date": "2026-11-09",
+    "url": "https://pub.dev/packages/meshstream_p2p/versions/1.0.9"
   },
-  "status": "local-candidate"
+  "status": "published",
+  "artifact": {
+    "filename": "meshstream_p2p-1.0.9-public.tar.gz",
+    "sha256": "f6e7ea6861d58f80291df6fab6681eb2807dc91b2ff9a3e60df8d08d2774cd8a",
+    "bytes": 114222
+  }
 }
