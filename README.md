@@ -6,6 +6,17 @@ MeshStream is a Flutter / Dart plugin for P2P video and audio streaming on Andro
 
 The [example app](example/) uses `video_player`; your application owns the player UI and decoding.
 
+## How it works
+
+Create a session from your media URL, then give its `playbackUrl` to your existing player:
+
+```text
+App → SDK playback session → Local playback URL → Player
+                              └─ SDK fetches from peers or origin/CDN
+```
+
+Your player handles decoding, rendering and playback controls. The SDK handles media delivery, caching and P2P scheduling. Configuration and P2P preparation run in the background; playback need not wait for a peer connection. Stop using the old playback URL before closing its session when leaving the page or switching content.
+
 ## Features
 
 - HLS, MPEG-DASH and HTTP Range MP4/MP3 through the native SDKs.
@@ -13,13 +24,26 @@ The [example app](example/) uses `video_player`; your application owns the playe
 - Preload, playback position/buffer updates, peer events and P2P/CDN statistics.
 - pub.dev installation and a `video_player` example app.
 
-Media decoding and format support depend on your chosen player and platform. P2P availability depends on network conditions and peers with matching content.
+## Before you start
 
-## Requirements and installation
+- Create an application and a platform-specific SDK Key in the [MeshStream console](https://console.meshstream.net/). If application identity validation is enabled, register the package name or Bundle ID of the app you run.
+- Have a playable HLS `.m3u8`, DASH `.mpd`, or HTTP Range-capable MP4 / MP3 URL. Prefer HTTPS.
+- Choose a player that supports your source format. The SDK adds delivery capabilities, not codecs; AVPlayer, for example, does not natively play DASH.
+
+To try it first, jump to [Run the demo](#run-the-demo). The online demo linked above is a Web experience; run this repository's example for this platform.
+
+## Installation and network configuration
+
+```bash
+flutter pub add meshstream_p2p:1.0.9
+flutter pub add video_player
+```
+
+Plugin version: `1.0.9`; Android and iOS native dependencies: `1.0.10`.
 
 The Android dependency includes `armeabi-v7a`, `arm64-v8a`, `x86`, and `x86_64` for matching devices and emulators. Your app must also meet the OS and architecture requirements of its framework and player.
 
-Use Flutter 3.22 or newer and Dart 3.4 or newer. The plugin declares Android API 21+ and iOS 15.0+. Your app must meet the highest minimum OS version required by this plugin, the Flutter engine, and your player. The bundled example requires Android API 24+. Add `meshstream_p2p` and a player package such as `video_player` to your app. Install `meshstream_p2p` from pub.dev.
+Use Flutter 3.22 or newer and Dart 3.4 or newer. The plugin declares Android API 21+ and iOS 15.0+. Your app must meet the highest minimum OS version required by this plugin, the Flutter engine, and your player. The bundled example requires Android API 24+.
 
 The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.0.10`. Choose one configuration that matches how your project manages repositories. The examples below use Kotlin DSL.
 
@@ -39,6 +63,9 @@ allprojects {
     }
 }
 ```
+
+<details>
+<summary>Projects managing repositories in settings (expand)</summary>
 
 ### Projects managing repositories in settings
 
@@ -63,6 +90,8 @@ dependencyResolutionManagement {
     }
 }
 ```
+
+</details>
 
 MeshStream playback URLs use a local HTTP proxy. In an Android host app, allow cleartext traffic for loopback hosts only. Add `android:networkSecurityConfig="@xml/meshstream_network_security_config"` to `<application>` and create `res/xml/meshstream_network_security_config.xml`:
 
@@ -91,6 +120,9 @@ The plugin podspec pins `MeshStreamKit` 1.0.10. The bundled example targets iOS 
 Replace the instructional Key and URL with values you are authorized to use. `MeshStreamConfig` and `PlaybackSessionOptions` are validated factories, so call them without `const`.
 
 ```dart
+import 'package:meshstream_p2p/meshstream_p2p.dart';
+import 'package:video_player/video_player.dart';
+
 final client = await MeshStream.create(
   MeshStreamConfig(key: 'key_your_meshstream_key'),
 );
@@ -112,14 +144,20 @@ Import `package:meshstream_p2p/meshstream_p2p.dart` and your chosen player packa
 
 Supported source types are HLS (`m3u8`), MPEG-DASH (`mpd`), MP4 (`mp4`), and MP3 (`mp3`) via `MeshStreamMimeType`. Playback capabilities still depend on the chosen player and platform. A content ID is optional; use a stable ID for the same content. The SDK can fall back to CDN delivery when P2P is unavailable. Play the returned `session.playbackUrl` in either mode and inspect `session.playbackMode` and `session.fallbackReason` for the initial state.
 
-## Events and diagnostics
+Render the controller with `VideoPlayer(controller)` in your widget. The startup and teardown snippets belong in separate lifecycle steps; keep the session alive during playback.
 
-Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. `cdnFallback` reports a CDN byte delta, not a playback mode transition: a native P2P session can still fetch some bytes from CDN. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every five seconds and displays the latest fallback reason.
+```dart
+// On teardown, cancel event subscriptions first, then:
+await controller.dispose();
+await session.close();
+await client.close();
+```
 
-## Run the example
+## Run the demo
 
 ```sh
-cd example
+git clone https://github.com/Mesh-Stream/meshstream-p2p-flutter-sdk.git
+cd meshstream-p2p-flutter-sdk/example
 flutter pub get
 flutter run --target lib/main.dart
 ```
@@ -127,6 +165,24 @@ flutter run --target lib/main.dart
 Enter your own Key and an accessible source URL in the app. The fields contain only non-working hints. Add `-d DEVICE_ID` to select a connected device.
 
 For a standalone Android Demo, run `flutter run --release --target lib/main.dart -d YOUR_ANDROID_DEVICE_ID`. To produce an APK, run `flutter build apk --release --target lib/main.dart`; the output is `build/app/outputs/flutter-apk/app-release.apk`. Configure your application's ID, version, and production signing before publishing it.
+
+Use `flutter devices` to list device IDs. iOS simulator runs require macOS/Xcode; devices require signing. Launch debug builds through `flutter run` rather than reopening the debug app from the home screen.
+
+## Events and diagnostics
+
+Subscribe to `MeshStream.eventsFor(sessionId: session.sessionId)` and cancel the subscription before closing the session. Event names are `peerCountChanged`, `playbackPrepared`, `p2pReady`, `p2pUnavailable`, `statistics`, `cdnFallback`, `trackerError`, and `peerConnectError`. `p2pUnavailable` supplies a reason; `statistics` supplies byte counters and peer counts. `cdnFallback` reports a CDN byte delta, not a playback mode transition: a native P2P session can still fetch some bytes from CDN. The session also offers `getStats()` and `getDiagnostics()` for snapshots. `getStatus()` on the client reports account/application/key/platform eligibility. The example refreshes stats and diagnostics every five seconds and displays the latest fallback reason.
+
+## Verify P2P delivery
+
+1. Play the same content in two devices or independently running instances, each with a valid Key. Use the same rendition and nearby playback positions. For rotating signed URLs, use the same stable content ID for the same content, and different IDs for different content.
+2. Watch peers and traffic in the demo. A nonzero peer count means a connection exists; **increasing P2P download or upload bytes** confirms media sharing.
+3. Close the other instance and check that HTTP/CDN playback continues. Also check seeking, switching content and cleanup when leaving playback.
+
+HTTP/CDN delivery is normal with one viewer or no shareable segments. Discovery and sharing also depend on account configuration, network connectivity and the content cached by both viewers.
+
+## More examples and support
+
+See [advanced usage](https://meshstream.net/docs/sdk/flutter-advanced/) for preload, live/VOD scheduling, player feedback, multiple sessions and diagnostics. See [CHANGELOG](CHANGELOG.md) for updates. Contact support@meshstream.net with the SDK version, OS, player and redacted logs.
 
 ## Other MeshStream SDKs
 
