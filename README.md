@@ -1,6 +1,19 @@
-# MeshStream P2P for Flutter
+# MeshStream P2P Flutter SDK
 
-MeshStream adds peer-assisted delivery to Flutter playback on Android and iOS. It creates a playback URL for your player and reports P2P/CDN status; it does not provide a player UI or decoder. The [example app](example/) uses `video_player`.
+[简体中文](README.zh-CN.md) · [Website](https://meshstream.net/) · [Documentation](https://meshstream.net/docs/sdk/flutter-setup/) · [pub.dev](https://pub.dev/packages/meshstream_p2p) · [Live demo](https://demo.meshstream.net/)
+
+MeshStream is a Flutter / Dart plugin for P2P video and audio streaming on Android and iOS. The `meshstream_p2p` package exposes the native playback URL, peer events and traffic statistics to `video_player` or another compatible player, with HTTP/CDN fallback.
+
+The [example app](example/) uses `video_player`; your application owns the player UI and decoding.
+
+## Features
+
+- HLS, MPEG-DASH and HTTP Range MP4/MP3 through the native SDKs.
+- A shared Dart client/session API for Android and iOS.
+- Preload, playback position/buffer updates, peer events and P2P/CDN statistics.
+- pub.dev installation and a `video_player` example app.
+
+Media decoding and format support depend on your chosen player and platform. P2P availability depends on network conditions and peers with matching content.
 
 ## Requirements and installation
 
@@ -114,3 +127,12 @@ flutter run --target lib/main.dart
 Enter your own Key and an accessible source URL in the app. The fields contain only non-working hints. Add `-d DEVICE_ID` to select a connected device.
 
 For a standalone Android Demo, run `flutter run --release --target lib/main.dart -d YOUR_ANDROID_DEVICE_ID`. To produce an APK, run `flutter build apk --release --target lib/main.dart`; the output is `build/app/outputs/flutter-apk/app-release.apk`. Configure your application's ID, version, and production signing before publishing it.
+
+## Other MeshStream SDKs
+
+- [Web](https://github.com/Mesh-Stream/meshstream-p2p-web-sdk): JavaScript / TypeScript, WebRTC and browser players.
+- [iOS / macOS](https://github.com/Mesh-Stream/meshstream-p2p-ios-sdk): MeshStreamKit, Swift / Objective-C, SPM and CocoaPods.
+- [Android](https://github.com/Mesh-Stream/meshstream-p2p-android-sdk): Kotlin / Java, Maven and Media3 / ExoPlayer.
+- [Windows](https://github.com/Mesh-Stream/meshstream-p2p-Windows-sdk): C / C++ API for Windows 10 / 11 x64.
+- [uni-app](https://github.com/Mesh-Stream/meshstream-p2p-uniapp-sdk): UTS / JavaScript plugin for iOS and Android apps.
+- [React Native](https://github.com/Mesh-Stream/meshstream-p2p-react-native-sdk): TypeScript API for iOS / Android with react-native-video examples.

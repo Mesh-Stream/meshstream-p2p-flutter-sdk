@@ -1,6 +1,19 @@
 # MeshStream P2P Flutter SDK
 
-MeshStream 为 Android 和 iOS 上的 Flutter 播放增加 P2P 辅助分发。它向播放器提供播放 URL，并报告 P2P/CDN 状态；它本身不提供播放器界面或解码器。[示例应用](example/)使用 `video_player`。
+[English](README.md) · [官网](https://meshstream.net/zh/) · [接入文档](https://meshstream.net/zh/docs/sdk/flutter-setup/) · [pub.dev](https://pub.dev/packages/meshstream_p2p) · [在线 Demo](https://demo.meshstream.net/)
+
+MeshStream 是面向 Android 和 iOS 的 Flutter / Dart P2P 视频与音频流媒体插件。`meshstream_p2p` 向 `video_player` 或其他兼容播放器提供原生播放地址、Peer 事件及流量统计，并支持 HTTP/CDN 回退。
+
+[示例应用](example/)使用 `video_player`；播放器界面与解码由应用管理。
+
+## 产品能力
+
+- 通过原生 SDK 接入 HLS、MPEG-DASH 和支持 HTTP Range 的 MP4/MP3。
+- Android 与 iOS 使用统一的 Dart client/session API。
+- 支持预加载、播放位置与缓冲回传、Peer 事件和 P2P/CDN 统计。
+- 通过 pub.dev 安装，提供 `video_player` 示例应用。
+
+媒体解码与格式兼容性取决于所选播放器和平台；P2P 可用性取决于网络条件及持有相同内容的 Peer。
 
 ## 环境与安装
 
@@ -114,3 +127,12 @@ flutter run --target lib/main.dart
 在应用中输入自己的 Key 和可访问的源 URL。字段仅含无法工作的提示值。连接多个设备时添加 `-d 设备ID`。
 
 需要独立运行 Android Demo 时，执行 `flutter run --release --target lib/main.dart -d YOUR_ANDROID_DEVICE_ID`，将设备 ID 替换为实际值。分发 APK 时执行 `flutter build apk --release --target lib/main.dart`，产物为 `build/app/outputs/flutter-apk/app-release.apk`。发布自己的应用前配置应用 ID、版本及正式签名。
+
+## 其他 MeshStream SDK
+
+- [Web](https://github.com/Mesh-Stream/meshstream-p2p-web-sdk): JavaScript / TypeScript、WebRTC 与浏览器播放器.
+- [iOS / macOS](https://github.com/Mesh-Stream/meshstream-p2p-ios-sdk): MeshStreamKit、Swift / Objective-C、SPM 与 CocoaPods.
+- [Android](https://github.com/Mesh-Stream/meshstream-p2p-android-sdk): Kotlin / Java、Maven 与 Media3 / ExoPlayer.
+- [Windows](https://github.com/Mesh-Stream/meshstream-p2p-Windows-sdk): 面向 Windows 10 / 11 x64 的 C / C++ 接口.
+- [uni-app](https://github.com/Mesh-Stream/meshstream-p2p-uniapp-sdk): 面向 iOS / Android App 的 UTS / JavaScript 插件.
+- [React Native](https://github.com/Mesh-Stream/meshstream-p2p-react-native-sdk): 面向 iOS / Android 的 TypeScript API 及 react-native-video 示例.
