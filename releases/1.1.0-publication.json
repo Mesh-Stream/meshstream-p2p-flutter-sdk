@@ -1,0 +1,21 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.1.0",
+  "published": "2026-11-12",
+  "channel": "pub.dev",
+  "artifact": {
+    "url": "https://pub.dev/api/archives/meshstream_p2p-1.1.0.tar.gz",
+    "bytes": 119108,
+    "sha256": "46a3aed0af3c2cc49e9056dc1c32de40c054539e57a0ebddf61620ffa7549596"
+  },
+  "nativeVersions": {
+    "android": "1.1.0",
+    "ios": "1.1.0"
+  },
+  "gitTag": "1.1.0",
+  "gitTagRevision": "55211b3a756fda78237bbcbe8272348c0e034d13",
+  "verification": {
+    "publicExactVersionInstall": true,
+    "downloadChecksumVerified": true
+  }
+}
