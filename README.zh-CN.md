@@ -35,17 +35,17 @@ MeshStream 是面向 Android 和 iOS 的 Flutter / Dart P2P 视频与音频流�
 ## 安装与网络配置
 
 ```bash
-flutter pub add meshstream_p2p:1.0.9
+flutter pub add meshstream_p2p:1.1.0
 flutter pub add video_player
 ```
 
-插件版本为 `1.0.9`，Android 与 iOS 原生依赖均固定为 `1.0.10`。
+插件版本为 `1.1.0`，Android 与 iOS 原生依赖均固定为 `1.1.0`。
 
 Android 依赖包含 `armeabi-v7a`、`arm64-v8a`、`x86` 和 `x86_64`，可用于相应架构的真机与模拟器；应用仍需满足框架、基座及播放器的系统和架构要求。
 
 需要 Flutter 3.22、Dart 3.4 或更新版本。插件 Android 声明下限为 API 21，iOS 为 15.0。应用实际下限取插件、Flutter 引擎和播放器要求的最大值；示例需要 Android API 24 及以上。
 
-插件固定使用 Android SDK `io.meshstream:meshstream-android-sdk:1.0.10`。根据工程当前的仓库管理方式选择下面一种配置。以下示例使用 Kotlin DSL。
+插件固定使用 Android SDK `io.meshstream:meshstream-android-sdk:1.1.0`。根据工程当前的仓库管理方式选择下面一种配置。以下示例使用 Kotlin DSL。
 
 ### Flutter 默认工程
 
@@ -113,7 +113,7 @@ iOS 在 `flutter pub get` 后按 Flutter 常规 CocoaPods 流程安装：
 cd ios && pod install
 ```
 
-插件 podspec 固定使用 `MeshStreamKit` 1.0.10。仓库内示例在当前 Flutter 工具链下以 iOS 15.0 或更新版本为目标。在 `ios/Runner/Info.plist` 中设置 `NSAppTransportSecurity` → `NSAllowsLocalNetworking = true`，已有 ATS 字典时合并该设置并保留其他限制。
+插件 podspec 固定使用 `MeshStreamKit` 1.1.0。仓库内示例在当前 Flutter 工具链下以 iOS 15.0 或更新版本为目标。在 `ios/Runner/Info.plist` 中设置 `NSAppTransportSecurity` → `NSAllowsLocalNetworking = true`，已有 ATS 字典时合并该设置并保留其他限制。
 
 ## 开始播放
 

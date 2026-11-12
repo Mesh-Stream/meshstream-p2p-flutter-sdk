@@ -73,6 +73,6 @@ android {
 }
 
 dependencies {
-    implementation("io.meshstream:meshstream-android-sdk:1.0.10")
+    implementation("io.meshstream:meshstream-android-sdk:1.1.0")
     testImplementation("junit:junit:4.13.2")
 }
