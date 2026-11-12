@@ -12,7 +12,8 @@ import 'package:video_player/video_player.dart';
 // Pass Keys using --dart-define-from-file pointing to an untracked local file.
 // This test uses the real Flutter plugins, public native SDKs, and live services.
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
   testWidgets('live native playback and cross-platform peer discovery',
       (tester) async {
@@ -79,9 +80,18 @@ void main() {
       final activePlayer = player;
       await player.initialize().timeout(const Duration(seconds: 60));
       await tester.pumpWidget(MaterialApp(
-        home: Scaffold(body: Center(child: VideoPlayer(activePlayer))),
+        home: Scaffold(
+          appBar: AppBar(title: const Text('MeshStream device acceptance')),
+          body: Center(
+            child: AspectRatio(
+              aspectRatio: activePlayer.value.aspectRatio,
+              child: VideoPlayer(activePlayer),
+            ),
+          ),
+        ),
       ));
       await player.play();
+      await tester.pump();
       record('player', {
         'initialized': player.value.isInitialized,
         'width': player.value.size.width,
