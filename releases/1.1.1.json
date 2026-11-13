@@ -1,0 +1,41 @@
+{
+  "package": "meshstream_p2p",
+  "version": "1.1.1",
+  "nativeDependencies": {
+    "android": {
+      "maven": "io.meshstream:meshstream-android-sdk",
+      "version": "1.1.1",
+      "minSdk": 21,
+      "abi": [
+        "armeabi-v7a",
+        "arm64-v8a",
+        "x86",
+        "x86_64"
+      ],
+      "aarSha256": "401163248e90d580ad659d330016172c0871cfdcda7e7633f9b2c6f3d3394ca8"
+    },
+    "ios": {
+      "pod": "MeshStreamKit",
+      "version": "1.1.1",
+      "runtimeVersion": "1.1.1",
+      "minimumOS": "iOS 15.0",
+      "zipSha256": "aff639a81aaecd57ca4713a872331746d703a595e4f2048a91da363d303f076c"
+    }
+  },
+  "compatibility": {
+    "effectiveMinimum": "max(plugin, framework/runtime, player)",
+    "exampleMinSdk": 24
+  },
+  "publication": {
+    "pubDev": "published",
+    "version": "1.1.1",
+    "archiveSha256": "e894f5b8f392324e1cb7939ce7a19487c3c19679ecacd439bc1f6f54183a1d1f"
+  },
+  "validation": {
+    "androidMaven": "passed",
+    "iosCocoaPods": "passed",
+    "iosSimulatorBuild": "passed",
+    "androidExampleBuild": "passed",
+    "deviceAcceptance": "pending"
+  }
+}
