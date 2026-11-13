@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 - candidate
+
+- Candidate update to native Android/iOS SDK 1.1.1; public CocoaPods installation is pending Trunk publication.
+
 ## 1.1.0 - 2026-11-12
 
 - Pins Android and iOS native SDK dependencies to 1.1.0.

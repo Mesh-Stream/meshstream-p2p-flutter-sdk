@@ -35,17 +35,17 @@ To try it first, jump to [Run the demo](#run-the-demo). The online demo linked a
 ## Installation and network configuration
 
 ```bash
-flutter pub add meshstream_p2p:1.1.0
+flutter pub add meshstream_p2p:1.1.1
 flutter pub add video_player
 ```
 
-Plugin version: `1.1.0`; Android and iOS native dependencies: `1.1.0`.
+Plugin version: `1.1.1`; Android and iOS native dependencies: `1.1.1`.
 
 The Android dependency includes `armeabi-v7a`, `arm64-v8a`, `x86`, and `x86_64` for matching devices and emulators. Your app must also meet the OS and architecture requirements of its framework and player.
 
 Use Flutter 3.22 or newer and Dart 3.4 or newer. The plugin declares Android API 21+ and iOS 15.0+. Your app must meet the highest minimum OS version required by this plugin, the Flutter engine, and your player. The bundled example requires Android API 24+.
 
-The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.1.0`. Choose one configuration that matches how your project manages repositories. The examples below use Kotlin DSL.
+The plugin pins the public Android SDK `io.meshstream:meshstream-android-sdk:1.1.1`. Choose one configuration that matches how your project manages repositories. The examples below use Kotlin DSL.
 
 ### Default Flutter projects
 
@@ -113,7 +113,7 @@ On iOS, use the normal Flutter CocoaPods flow after `flutter pub get`:
 cd ios && pod install
 ```
 
-The plugin podspec pins `MeshStreamKit` 1.1.0. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain. In `ios/Runner/Info.plist`, set `NSAppTransportSecurity` → `NSAllowsLocalNetworking` to `true`, merging it into any existing ATS dictionary while retaining other restrictions.
+The plugin podspec pins `MeshStreamKit` 1.1.1. The bundled example targets iOS 15.0 or newer with the current Flutter toolchain. In `ios/Runner/Info.plist`, set `NSAppTransportSecurity` → `NSAllowsLocalNetworking` to `true`, merging it into any existing ATS dictionary while retaining other restrictions.
 
 ## Start playback
 
