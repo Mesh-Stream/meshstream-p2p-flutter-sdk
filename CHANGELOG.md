@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 - 2026-11-16
+
+- Pins the public iOS and Android native SDK dependencies to 1.1.2.
+- Keeps the existing Flutter API and platform minimums.
+
+
 ## 1.1.1 - candidate
 
 - Candidate update to native Android/iOS SDK 1.1.1; public CocoaPods installation is pending Trunk publication.
