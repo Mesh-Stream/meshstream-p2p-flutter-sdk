@@ -37,6 +37,9 @@
     "iosCocoaPods": "passed",
     "iosSimulatorBuild": "passed",
     "androidExampleBuild": "passed",
-    "deviceAcceptance": "pending"
+    "deviceAcceptance": "pending",
+    "androidDevice": "passed: ARM64 Android 13; public 1.1.2 example built, installed and launched",
+    "iosSimulator": "passed: iPhone 17 simulator; public 1.1.2 Pod resolved and app launched",
+    "iosDevice": "pending: requires a signed Flutter Runner profile"
   }
 }
